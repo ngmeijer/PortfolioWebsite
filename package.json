@@ -1,0 +1,26 @@
+{
+  "name": "portfoliowebsite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngmeijer/PortfolioWebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ngmeijer/PortfolioWebsite/issues"
+  },
+  "homepage": "https://github.com/ngmeijer/PortfolioWebsite#readme",
+  "dependencies": {
+    "three": "^0.159.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.4"
+  }
+}
