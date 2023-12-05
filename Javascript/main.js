@@ -1,8 +1,39 @@
 import * as THREE from 'three';
+import TestScene from './TestScene.js';
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const scene = new TestScene();
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+const sizes = { 
+    x: window.innerWidth, 
+    y: window.innerHeight,
+};
+const camera = new THREE.PerspectiveCamera(75, sizes.x / sizes.y, 0.1, 1000);
+camera.position.z = 5;
+const canvas = document.querySelector('canvas.webgl')
+
+const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true,
+});
+renderer.setSize(sizes.x, sizes.y);
+document.body.appendChild(renderer.domElement);
+
+window.addEventListener('resize', () =>
+{
+    // Update sizes
+    sizes.width = window.innerWidth'
+    sizes.height = window.innerHeight'
+
+    camera.aspect = sizes.width / sizes.height'
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+})
+
+function animate() {
+    scene.update();
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+animate();
