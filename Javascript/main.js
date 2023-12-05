@@ -3,8 +3,8 @@ import TestScene from './TestScene.js';
 
 const scene = new TestScene();
 
-const sizes = { 
-    x: window.innerWidth, 
+const sizes = {
+    x: window.innerWidth,
     y: window.innerHeight,
 };
 const camera = new THREE.PerspectiveCamera(75, sizes.x / sizes.y, 0.1, 1000);
@@ -17,14 +17,15 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.x, sizes.y);
 document.body.appendChild(renderer.domElement);
+document.addEventListener('keypress', scene.onDocumentKeyPress);
+document.addEventListener('keydown', scene.onDocumentKeyDown);
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
-    sizes.width = window.innerWidth'
-    sizes.height = window.innerHeight'
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
 
-    camera.aspect = sizes.width / sizes.height'
+    camera.aspect = sizes.width / sizes.height;
     camera.updateProjectionMatrix();
 
     renderer.setSize(sizes.width, sizes.height);
