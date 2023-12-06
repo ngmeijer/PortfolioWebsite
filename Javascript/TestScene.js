@@ -106,21 +106,20 @@ export default class TestScene extends THREE.Scene {
     }
 
     submitContent() {
-        this.addToTerminalContent();
+        this.addToTerminalContent(this.inputFieldContent);
         this.createDefaultTerminalLine();
     }
 
-    addToTerminalContent() {
+    addToTerminalContent(textGiven) {
         let newLine;
         this.fontLoader.load(
             './static/fonts/helvetiker_regular.typeface.json',
             (font) => {
-                const textGeometry = new TextGeometry(this.inputFieldContent, {
+                const textGeometry = new TextGeometry(textGiven, {
                     font,
                     size: 0.3,
                     height: 0.01,
                 });
-                //textGeometry.center();
                 newLine = new THREE.Mesh(textGeometry);
 
                 this.terminalContentGroup.traverse(function (object) {

@@ -6,8 +6,10 @@ const sizes = {
     x: window.innerWidth,
     y: window.innerHeight,
 };
-const camera = new THREE.PerspectiveCamera(75, sizes.x / sizes.y, 0.1, 1000);
-camera.position.z = 5;
+
+const aspectRatio = sizes.x / sizes.y
+const camera = new THREE.OrthographicCamera(- 1 * aspectRatio, 1 * aspectRatio, 1, - 1, 0.1, 100)
+camera.position.z = 10;
 const canvas = document.querySelector('canvas.webgl')
 document.addEventListener('keydown', scene.onDocumentKeyPress);
 
