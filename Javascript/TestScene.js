@@ -14,6 +14,8 @@ export default class TestScene extends THREE.Scene {
         "Insert", "Home", "PageUp", "PageDown", "Delete", "End",
         "Numlock", "ScrollLock", "Pause", "Escape"]
     defaultTerminalLine = "C:\\Portfolio>";
+    validCommands = ["cd", "ls", "cat"]
+    errorMessageInvalidCommand = " is not recognized as an internal or external command."
 
     constructor() {
         super()
@@ -66,47 +68,9 @@ export default class TestScene extends THREE.Scene {
         }
     }
 
-    checkForSpecialSigns(character) {
-        switch (character) {
-            case "1":
-                character = "!";
-                break;
-            case "2":
-                character = "@";
-                break;
-            case "3":
-                character = "#";
-                break;
-            case "4":
-                character = "$";
-                break;
-            case "5":
-                character = "%";
-                break;
-            case "6":
-                character = "^";
-                break;
-            case "7":
-                character = "&";
-                break;
-            case "8":
-                character = "*";
-                break;
-            case "9":
-                character = "(";
-                break;
-            case "0":
-                character = ")";
-                break;
-            default:
-                return character;
-        }
-
-        return character;
-    }
-
     submitContent() {
         this.addToTerminalContent(this.inputFieldContent);
+        this.checkValidInput();
         this.createDefaultTerminalLine();
     }
 
@@ -123,7 +87,8 @@ export default class TestScene extends THREE.Scene {
                 newLine = new THREE.Mesh(textGeometry);
 
                 this.terminalContentGroup.traverse(function (object) {
-                    object.position.y += 0.4;
+                    if (object.type != "Group")
+                        object.position.y += 0.5;
                 });
 
                 this.terminalContentGroup.add(newLine);
@@ -148,6 +113,24 @@ export default class TestScene extends THREE.Scene {
                 this.inputFieldTextObject = new THREE.Mesh(textGeometry);
                 this.inputFieldGroup.add(this.inputFieldTextObject);
             });
+    }
+
+    checkValidInput() {
+        let index = this.inputFieldContent.indexOf(">");
+        let resultString = "";
+        if (index !== -1) {
+            resultString = this.inputFieldContent.substring(index + 1).trim();
+        }
+
+        let command = resultString.split(" ")[0];
+        //Invalid command.
+        if(!this.validCommands.includes(command))
+        {
+            this.addToTerminalContent("'" + command + "'" + this.errorMessageInvalidCommand);
+            return;
+        }
+        
+        
     }
 
     update() {
