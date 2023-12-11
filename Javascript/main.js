@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import Stats from 'stats.js';
 import TestScene from './MainScene.js';
 
 const scene = new TestScene();
@@ -20,6 +21,9 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.x, sizes.y);
 document.body.appendChild(renderer.domElement);
+const stats = new Stats()
+stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom)
 
 window.addEventListener('resize', onResize);
 function onResize() {
@@ -34,8 +38,10 @@ function onResize() {
 }
 
 function animate() {
+    stats.begin();
     scene.update();
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+    stats.end();
 }
 animate();

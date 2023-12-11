@@ -15,7 +15,7 @@ export default class TerminalProperties {
     specialKeys = ["Shift", "CapsLock", "Enter", "Control", "ContextMenu", "Tab", "Alt",
         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
         "Insert", "Home", "PageUp", "PageDown", "Delete", "End",
-        "Numlock", "ScrollLock", "Pause", "Escape", "Meta"]
+        "Numlock", "ScrollLock", "Pause", "Escape", "Meta", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"]
     defaultTerminalLine = "C:\\>";
     addedToTerminalPath = "";
     validCommandsMap = new Map([

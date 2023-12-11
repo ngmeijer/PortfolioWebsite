@@ -74,6 +74,9 @@ export default class MainScene extends THREE.Scene {
         }
 
         if (key == "Enter") {
+            let trimmedString = this.inputFieldContent.trim();
+            if(trimmedString == this.currentDirectory)
+                return;
             this.submitContent();
         }
 
