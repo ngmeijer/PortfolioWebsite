@@ -54,7 +54,6 @@ export default class MainScene extends THREE.Scene {
         directionalLight.position.set(1, 1, 1).normalize();
         this.add(directionalLight);
 
-
         this.onDocumentKeyPress = this.onDocumentKeyPress.bind(this);
     }
 
@@ -62,10 +61,6 @@ export default class MainScene extends THREE.Scene {
         this.userIsTyping = true;
         const key = event.key;
         if (key == "Backspace") {
-            // const lastChar = this.inputFieldContent.charAt(this.inputFieldContent.length - 1);
-            // if (lastChar == ">")
-            //     return;
-
             event.preventDefault();
             if (this.inputFieldContent.endsWith(">")) {
                 console.log("Current character is >")
@@ -130,12 +125,14 @@ export default class MainScene extends THREE.Scene {
     searchFolder(directory, searchTerm) {
         try {
             const files = fs.readdirSync(directory);
+            console.log("reading.")
 
             for (const file of files) {
                 const filePath = path.join(directory, file);
                 const stats = fs.statSync(filePath);
 
                 if (stats.isDirectory()) {
+                    console.log("is directory.")
                     // If it's a directory, recursively search inside it
                     searchFolder(filePath, searchTerm);
                 } else if (stats.isFile() && file.includes(searchTerm)) {
@@ -235,19 +232,23 @@ export default class MainScene extends THREE.Scene {
         return true;
     }
 
-    recursivelySearchDirectories(specificDirectory = "./") {
-        fetch('https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(specificDirectory)}')
-            .then(response => response.json())
-            .then(data => {
-                if (import.meta.env.MODE === 'development') {
-                    console.log('Directories:', data.directories);
-                }
-            })
-            .catch(error => {
-                if (import.meta.env.MODE === 'development') {
-                    console.log("Error fetching directories:", error);
-                }
-            });
+    async recursivelySearchDirectories() {
+        try {
+            const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(`Terminal`)}`);
+            const data = await response.json();
+
+            if (import.meta.env.MODE === 'development') {
+                console.log('Directories:', data.directories);
+            }
+
+            const dirArray = Object.values(data.directories);
+            return dirArray;
+        } catch (error) {
+            if (import.meta.env.MODE === 'development') {
+                console.log("Error fetching directories:", error);
+            }
+            throw error;
+        }
     }
 
     getDirectory() {
@@ -275,11 +276,23 @@ export default class MainScene extends THREE.Scene {
                 break;
             //List all subdirectories of current root directory.
             case "dir":
-                let directories = this.recursivelySearchDirectories();
-                // this.addToTerminalContent("Directory of " + this.currentDirectory)
-                // for (let i = 0; i < directories.length; i++) {
-                //     this.addToTerminalContent(" - " + directories[i]);
-                // }
+                (async () => {
+                    try {
+                        const directories = await this.recursivelySearchDirectories();
+                        this.addToTerminalContent("Subdirectories of " + this.currentDirectory);
+                        const modifiedArray = directories.map(directory => {
+                            // Replace everything before "/Dir" with an empty string
+                            return directory.replace(/.*\/Terminal/, '');
+                        });
+
+                        for (let i = 0; i < modifiedArray.length; i++) {
+                            let dirName = modifiedArray[i];
+                            this.addToTerminalContent(" - " + dirName);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching directories:", error);
+                    }
+                })();
                 break;
             //Move into specified directory.
             case "cd":
