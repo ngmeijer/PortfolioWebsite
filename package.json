@@ -18,9 +18,10 @@
   },
   "homepage": "https://github.com/ngmeijer/PortfolioWebsite#readme",
   "dependencies": {
+    "express": "^4.18.2",
     "three": "^0.159.0"
   },
   "devDependencies": {
-    "vite": "^5.0.5"
+    "vite": "^5.0.7"
   }
 }

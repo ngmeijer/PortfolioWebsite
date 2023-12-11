@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import TestScene from './TestScene.js';
+import TestScene from './MainScene.js';
 
 const scene = new TestScene();
 const sizes = {
@@ -12,6 +12,7 @@ const camera = new THREE.PerspectiveCamera(75, sizes.x / sizes.y, 0.1, 1000);
 camera.position.z = 6;
 const canvas = document.querySelector('canvas.webgl')
 document.addEventListener('keydown', scene.onDocumentKeyPress);
+document.addEventListener('keyup', scene.onDocumentKeyRelease);
 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
