@@ -18,12 +18,12 @@ export default class TerminalProperties {
         "Numlock", "ScrollLock", "Pause", "Escape", "Meta"]
     defaultTerminalLine = "C:\\>";
     addedToTerminalPath = "";
-    validLayer1Directories = ["Portfolio", "About Me", "Contact Me"];
     validCommandsMap = new Map([
-        { "help": "Lists all commands available." },
-        { "dir": "Lists all subdirectories of this directory." },
-        { "cd": "Move into specified directory." },
-        { "type": "Show content of specified file." }]);
+        ["help", "Lists all commands available."],
+        ["dir", "Lists all subdirectories of this directory."],
+        ["cd", "Move into specified directory."],
+        ["type", "Show content of specified file."]
+    ]);
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";
     errorMessageInvalidDirectory = "The system cannot find the path specified.";
 }

@@ -4,6 +4,9 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import PortfolioContent from './PortfolioContent.js';
 import TerminalProperties from './TerminalProperties.js';
 
+// const fs = require('fs');
+// const path = require('path');
+
 export default class MainScene extends THREE.Scene {
     fontLoader;
     inputFieldTextObject;
@@ -26,7 +29,7 @@ export default class MainScene extends THREE.Scene {
         this.inputFieldGroup = new THREE.Group();
         this.terminalContentGroup = new THREE.Group();
         this.terminalProps = new TerminalProperties();
-        console.log(this.terminalProps.validCommandsMap);
+
         this.add(this.inputFieldGroup);
         this.add(this.terminalContentGroup);
 
@@ -59,12 +62,18 @@ export default class MainScene extends THREE.Scene {
         this.userIsTyping = true;
         const key = event.key;
         if (key == "Backspace") {
-            const lastChar = this.inputFieldContent.charAt(this.inputFieldContent.length - 1);
-            if (lastChar == ">")
-                return;
+            // const lastChar = this.inputFieldContent.charAt(this.inputFieldContent.length - 1);
+            // if (lastChar == ">")
+            //     return;
 
             event.preventDefault();
-            this.inputFieldContent = this.inputFieldContent.substring(0, this.inputFieldContent.length - 1);
+            if (this.inputFieldContent.endsWith(">")) {
+                console.log("Current character is >")
+                return;
+            }
+
+            const newContent = this.inputFieldContent.slice(0, -1);
+            this.inputFieldContent = newContent;
             this.updateInputField();
             return;
         }
@@ -118,6 +127,28 @@ export default class MainScene extends THREE.Scene {
         let shouldProceed = this.executeCommand();
     }
 
+    searchFolder(directory, searchTerm) {
+        try {
+            const files = fs.readdirSync(directory);
+
+            for (const file of files) {
+                const filePath = path.join(directory, file);
+                const stats = fs.statSync(filePath);
+
+                if (stats.isDirectory()) {
+                    // If it's a directory, recursively search inside it
+                    searchFolder(filePath, searchTerm);
+                } else if (stats.isFile() && file.includes(searchTerm)) {
+                    // If it's a file and contains the search term, do something with it
+                    console.log(filePath);
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
+
     addToTerminalContent(textGiven, customFontSize = 0.2) {
         let newLine;
         this.fontLoader.load(
@@ -146,7 +177,6 @@ export default class MainScene extends THREE.Scene {
 
     updateInputField() {
         this.inputFieldGroup.remove(this.inputFieldTextObject);
-        let width = 0;
         this.fontLoader.load(
             './static/fonts/helvetiker_regular.typeface.json',
             (font) => {
@@ -159,17 +189,11 @@ export default class MainScene extends THREE.Scene {
                 this.inputFieldGroup.add(this.inputFieldTextObject);
                 this.inputFieldTextObject.updateMatrixWorld();
 
-                const boundingBox = new THREE.Box3().setFromObject(this.inputFieldTextObject);
-                const textWidth = boundingBox.max.x - boundingBox.min.x;
-                console.log(boundingBox);
-
-                let center = new THREE.Vector3(0, 0, 0);
-                boundingBox.getCenter(center);
-                console.log(center.x);
-                //this.caretTick.position.x = center.x;
-                //this.cursorTick.position.x = 0;
-                //this.cursorTick.position.x = boundingBox.getCenter(center).x + textWidth;
-                //console.log('Text Width:', textWidth);
+                this.inputFieldTextObject.geometry.computeBoundingBox();
+                const boundingBox = this.inputFieldTextObject.geometry.boundingBox;
+                const centerX = (boundingBox.min.x + boundingBox.max.x) / 2;
+                const defaultOffset = 0.05;
+                this.caretTick.position.x = centerX + (boundingBox.max.x / 2) + defaultOffset;
             });
     }
 
@@ -187,7 +211,6 @@ export default class MainScene extends THREE.Scene {
         //Retrieve the command
         this.currentCommand = resultString.split(" ")[0];
         //If array does not contain command, it is invalid. Throw error message to terminal.
-        console.log(this.terminalProps.validCommandsMap);
         if (!this.terminalProps.validCommandsMap.has(this.currentCommand)) {
             this.addToTerminalContent("'" + this.currentCommand + "'" + this.terminalProps.errorMessageInvalidCommand);
             return false;
@@ -212,9 +235,19 @@ export default class MainScene extends THREE.Scene {
         return true;
     }
 
-    recursivelySearchDirectories(specificDirectory = "Drive:/") {
-        let directories = [];
-
+    recursivelySearchDirectories(specificDirectory = "./") {
+        fetch('https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(specificDirectory)}')
+            .then(response => response.json())
+            .then(data => {
+                if (import.meta.env.MODE === 'development') {
+                    console.log('Directories:', data.directories);
+                }
+            })
+            .catch(error => {
+                if (import.meta.env.MODE === 'development') {
+                    console.log("Error fetching directories:", error);
+                }
+            });
     }
 
     getDirectory() {
@@ -233,17 +266,20 @@ export default class MainScene extends THREE.Scene {
         switch (this.currentCommand) {
             case "help":
                 this.addToTerminalContent("Valid commands are:")
-                for (let i = 0; i < this.terminalProps.validCommandsMap.length; i++) {
-                    this.addToTerminalContent(" - " + this.terminalProps.validCommandsMap[i]);
+                const map = this.terminalProps.validCommandsMap;
+                const keyArray = Array.from(map.keys())
+                const valueArray = Array.from(map.values());
+                for (let i = 0; i < keyArray.length; i++) {
+                    this.addToTerminalContent("     " + keyArray[i] + " - " + valueArray[i]);
                 }
                 break;
             //List all subdirectories of current root directory.
             case "dir":
                 let directories = this.recursivelySearchDirectories();
-                this.addToTerminalContent("Directory of " + this.currentDirectory)
-                for (let i = 0; i < directories.length; i++) {
-                    this.addToTerminalContent(" - " + directories[i]);
-                }
+                // this.addToTerminalContent("Directory of " + this.currentDirectory)
+                // for (let i = 0; i < directories.length; i++) {
+                //     this.addToTerminalContent(" - " + directories[i]);
+                // }
                 break;
             //Move into specified directory.
             case "cd":
