@@ -75,7 +75,7 @@ export default class MainScene extends THREE.Scene {
 
         if (key == "Enter") {
             let trimmedString = this.inputFieldContent.trim();
-            if(trimmedString == this.currentDirectory)
+            if (trimmedString == this.currentDirectory)
                 return;
             this.submitContent();
         }
@@ -242,10 +242,12 @@ export default class MainScene extends THREE.Scene {
 
             if (import.meta.env.MODE === 'development') {
                 console.log('Directories:', data.directories);
+                console.log('files:', data.files);
             }
 
             const dirArray = Object.values(data.directories);
-            return dirArray;
+            const fileArray = Object.values(data.files);
+            return new Object({ directories: dirArray, files: fileArray });
         } catch (error) {
             if (import.meta.env.MODE === 'development') {
                 console.log("Error fetching directories:", error);
@@ -281,16 +283,28 @@ export default class MainScene extends THREE.Scene {
             case "dir":
                 (async () => {
                     try {
-                        const directories = await this.recursivelySearchDirectories();
+                        const data = await this.recursivelySearchDirectories();
+                        
+                        //Directories
                         this.addToTerminalContent("Subdirectories of " + this.currentDirectory);
-                        const modifiedArray = directories.map(directory => {
+                        const dirArray = data.directories.map(directory => {
                             // Replace everything before "/Dir" with an empty string
                             return directory.replace(/.*\/Terminal/, '');
                         });
-
-                        for (let i = 0; i < modifiedArray.length; i++) {
-                            let dirName = modifiedArray[i];
+                        for (let i = 0; i < dirArray.length; i++) {
+                            let dirName = dirArray[i];
                             this.addToTerminalContent(" - " + dirName);
+                        }
+
+                        //Files
+                        this.addToTerminalContent("Files in " + this.currentDirectory);
+                        const fileArray = data.files.map(directory => {
+                            // Replace everything before "/Dir" with an empty string
+                            return directory.replace(/.*\/Terminal/, '');
+                        });
+                        for (let i = 0; i < fileArray.length; i++) {
+                            let fileName = fileArray[i];
+                            this.addToTerminalContent(" - " + fileName);
                         }
                     } catch (error) {
                         console.error("Error fetching directories:", error);
