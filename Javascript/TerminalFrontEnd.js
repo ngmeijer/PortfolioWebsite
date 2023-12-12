@@ -13,6 +13,7 @@ export default class TerminalFrontEnd {
     properties;
     inputFieldContent = "";
     inputFieldTextObject;
+    currentDirectory = "";
 
     constructor(scene) {
         this.scene = scene;
@@ -43,7 +44,7 @@ export default class TerminalFrontEnd {
     async loadFont() {
         try {
             this.loadedFont = await new Promise((resolve, reject) => {
-                this.fontLoader.load('./static/fonts/hack.json', (font) => {
+                this.fontLoader.load('../../static/fonts/hack.json', (font) => {
                     resolve(font);
                 }, undefined, reject);
             });
@@ -53,6 +54,7 @@ export default class TerminalFrontEnd {
     }
 
     createTerminal() {
+        this.currentDirectory = this.properties.defaultTerminalLine;
         this.inputFieldContent = this.properties.defaultTerminalLine;
 
         //this.addToTerminalContent(this.asciiArt, 0.2);
@@ -183,7 +185,7 @@ export default class TerminalFrontEnd {
     }
 
     resetInputLine() {
-        this.inputFieldContent = this.properties.defaultTerminalLine + this.properties.addedToTerminalPath;
+        this.inputFieldContent = this.currentDirectory;
         this.updateInputField();
     }
 

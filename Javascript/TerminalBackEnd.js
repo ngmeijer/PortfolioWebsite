@@ -1,5 +1,8 @@
-export default class TerminalBackEnd{
-    constructor(){
+export default class TerminalBackEnd {
+    directories;
+    files;
+
+    constructor() {
 
     }
 
@@ -13,9 +16,9 @@ export default class TerminalBackEnd{
                 // console.log('files:', data.files);
             }
 
-            const dirArray = Object.values(data.directories);
-            const fileArray = Object.values(data.files);
-            return new Object({ directories: dirArray, files: fileArray });
+            this.directories = Object.values(data.directories);
+            this.files = Object.values(data.files);
+            return new Object({ directories: this.directories, files: this.files });
         } catch (error) {
             if (import.meta.env.MODE === 'development') {
                 console.log("Error fetching directories:", error);
@@ -24,7 +27,22 @@ export default class TerminalBackEnd{
         }
     }
 
-    getDirectory() {
+    async checkDirectory(directory) {
+        console.log("given directory:", directory)
+        try {
+            const url = `https://nilsmeijer.com/Terminal/CheckDirectory.php?data=${encodeURIComponent(directory)}`;
+            const response = await fetch(url);
+            const isValid = await response.text();
+
+            if (isValid == "true")
+                return true;
+            else return false;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    moveIntoDirectory() {
         
     }
 }

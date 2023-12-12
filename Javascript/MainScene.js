@@ -9,7 +9,6 @@ export default class MainScene extends THREE.Scene {
     frontend;
     backend;
 
-    currentDirectory = "";
     currentCommand = "";
     portfolioContent;
     backgroundPlane
@@ -24,7 +23,6 @@ export default class MainScene extends THREE.Scene {
 
         this.backend = new TerminalBackEnd();
 
-        this.currentDirectory = this.terminalProps.defaultTerminalLine;
         this.portfolioContent = new PortfolioContent();
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
@@ -52,7 +50,7 @@ export default class MainScene extends THREE.Scene {
 
         if (key == "Enter") {
             let trimmedString = this.frontend.inputFieldContent.trim();
-            if (trimmedString == this.currentDirectory)
+            if (trimmedString == this.frontend.currentDirectory)
                 return;
             this.submitContent();
         }
@@ -125,7 +123,7 @@ export default class MainScene extends THREE.Scene {
     }
 
     moveIntoDirectory(newDir) {
-        this.currentDirectory = newDir;
+        this.frontend.currentDirectory = newDir;
     }
 
     executeCommand() {
@@ -146,7 +144,20 @@ export default class MainScene extends THREE.Scene {
                 break;
             //Move into specified directory.
             case "cd":
-                //this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
+                (async () => {
+                    try {
+                        const canMove = await this.backend.checkDirectory(this.givenDirectory);
+                        console.log(canMove);
+                        if (canMove) {
+                            const removedBracket = this.frontend.currentDirectory.slice(0, -1);
+                            this.frontend.currentDirectory = removedBracket + (this.givenDirectory + ">");
+                            this.frontend.resetInputLine();
+                            console.log("moved to directory.")
+                        }
+                    } catch (error) {
+                        console.error("Error checking for specific directory");
+                    }
+                })();
                 break;
             case "cat":
                 break;
