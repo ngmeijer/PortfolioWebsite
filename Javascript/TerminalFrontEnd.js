@@ -189,29 +189,18 @@ export default class TerminalFrontEnd {
 
     clearTerminal() {
         this.terminalContentGroup.children.forEach(child => {
-            // Step 2: Remove from the scene
             this.terminalContentGroup.remove(child);
-        
-            // Step 3: Dispose of geometry and material
             if (child.geometry) {
                 child.geometry.dispose();
             }
-        
             if (child.material) {
                 child.material.dispose();
-        
-                // Dispose of material's map if it exists
                 if (child.material.map) {
                     child.material.map.dispose();
                 }
             }
-        
-            // Step 4: Release references (optional)
             child = null;
         });
-        
-        // Step 5: Clear the group's children array
         this.terminalContentGroup.children.length = 0;
-        
     }
 }

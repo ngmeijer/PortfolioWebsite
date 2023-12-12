@@ -107,10 +107,11 @@ export default class MainScene extends THREE.Scene {
             return false;
         }
 
+        let commandLowerCase = this.currentCommand.toLowerCase();
         //If the command is "dir" or "help", input is valid and we should not check for any path.
-        if (this.currentCommand.toLowerCase() == "dir" 
-            || this.currentCommand.toLowerCase() == "help"
-            || this.currentCommand.toLowerCase() == "clear")
+        if (commandLowerCase == "dir"
+            || commandLowerCase == "help"
+            || commandLowerCase == "clear")
             return true;
 
         this.givenDirectory = resultString.split(" ")[1];
@@ -145,7 +146,7 @@ export default class MainScene extends THREE.Scene {
                 break;
             //Move into specified directory.
             case "cd":
-                this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
+                //this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
                 break;
             case "cat":
                 break;
