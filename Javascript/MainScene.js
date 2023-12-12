@@ -78,39 +78,11 @@ export default class MainScene extends THREE.Scene {
         this.frontend.addToTerminalContent(this.frontend.inputFieldContent);
 
         let isValid = this.checkValidInput();
-        this.resetTerminalLine();
+        this.frontend.resetInputLine();
         if (!isValid)
             return;
 
         let shouldProceed = this.executeCommand();
-    }
-
-    searchFolder(directory, searchTerm) {
-        try {
-            const files = fs.readdirSync(directory);
-            console.log("reading.")
-
-            for (const file of files) {
-                const filePath = path.join(directory, file);
-                const stats = fs.statSync(filePath);
-
-                if (stats.isDirectory()) {
-                    console.log("is directory.")
-                    // If it's a directory, recursively search inside it
-                    searchFolder(filePath, searchTerm);
-                } else if (stats.isFile() && file.includes(searchTerm)) {
-                    // If it's a file and contains the search term, do something with it
-                    console.log(filePath);
-                }
-            }
-        } catch (error) {
-            console.error('Error:', error.message);
-        }
-    }
-
-    resetTerminalLine() {
-        this.frontend.inputFieldContent = this.terminalProps.defaultTerminalLine + this.terminalProps.addedToTerminalPath;
-        this.frontend.updateInputField();
     }
 
     checkValidInput() {
@@ -131,12 +103,14 @@ export default class MainScene extends THREE.Scene {
         //If array does not contain command, it is invalid. Throw error message to terminal.
         if (!this.terminalProps.validCommandsMap.has(this.currentCommand)) {
             console.log()
-            this.addToTerminalContent("'" + this.currentCommand + "'" + this.terminalProps.errorMessageInvalidCommand);
+            this.frontend.addToTerminalContent("'" + this.currentCommand + "'" + this.terminalProps.errorMessageInvalidCommand);
             return false;
         }
 
         //If the command is "dir" or "help", input is valid and we should not check for any path.
-        if (this.currentCommand.toLowerCase() == "dir" || this.currentCommand.toLowerCase() == "help")
+        if (this.currentCommand.toLowerCase() == "dir" 
+            || this.currentCommand.toLowerCase() == "help"
+            || this.currentCommand.toLowerCase() == "clear")
             return true;
 
         this.givenDirectory = resultString.split(" ")[1];
@@ -149,78 +123,21 @@ export default class MainScene extends THREE.Scene {
         return true;
     }
 
-    async recursivelySearchDirectories() {
-        try {
-            const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(`Terminal`)}`);
-            const data = await response.json();
-
-            if (import.meta.env.MODE === 'development') {
-                // console.log('Directories:', data.directories);
-                // console.log('files:', data.files);
-            }
-
-            const dirArray = Object.values(data.directories);
-            const fileArray = Object.values(data.files);
-            return new Object({ directories: dirArray, files: fileArray });
-        } catch (error) {
-            if (import.meta.env.MODE === 'development') {
-                console.log("Error fetching directories:", error);
-            }
-            throw error;
-        }
-    }
-
-    getDirectory() {
-        if (!this.validLayer1Directories.includes(this.givenDirectory)) {
-            this.addToTerminalContent(this.errorMessageInvalidDirectory);
-            return "invalid";
-        }
-        else return this.givenDirectory;
-    }
-
     moveIntoDirectory(newDir) {
         this.currentDirectory = newDir;
     }
 
     executeCommand() {
-        console.log("command:", this.currentCommand);
         switch (this.currentCommand) {
             case "help":
-                this.frontend.addToTerminalContent("Valid commands are:")
-                const map = this.terminalProps.validCommandsMap;
-                const keyArray = Array.from(map.keys())
-                const valueArray = Array.from(map.values());
-                for (let i = 0; i < keyArray.length; i++) {
-                    this.frontend.addToTerminalContent("     " + keyArray[i] + " - " + valueArray[i]);
-                }
+                this.frontend.executeHelpCommand();
                 break;
             //List all subdirectories of current root directory.
             case "dir":
                 (async () => {
                     try {
-                        const data = await this.recursivelySearchDirectories();
-
-                        //Directories
-                        this.frontend.addToTerminalContent("Subdirectories of " + this.currentDirectory);
-                        const dirArray = data.directories.map(directory => {
-                            // Replace everything before "/Dir" with an empty string
-                            return directory.replace(/.*\/Terminal/, '');
-                        });
-                        for (let i = 0; i < dirArray.length; i++) {
-                            let dirName = dirArray[i];
-                            this.frontend.addToTerminalContent(" - " + dirName);
-                        }
-
-                        //Files
-                        this.addToTerminalContent("Files in " + this.currentDirectory);
-                        const fileArray = data.files.map(directory => {
-                            // Replace everything before "/Dir" with an empty string
-                            return directory.replace(/.*\/Terminal/, '');
-                        });
-                        for (let i = 0; i < fileArray.length; i++) {
-                            let fileName = fileArray[i];
-                            this.addToTerminalContent(" - " + fileName);
-                        }
+                        const data = await this.backend.recursivelySearchDirectories();
+                        this.frontend.executeDirCommand(data);
                     } catch (error) {
                         console.error("Error fetching directories:", error);
                     }
@@ -228,10 +145,12 @@ export default class MainScene extends THREE.Scene {
                 break;
             //Move into specified directory.
             case "cd":
-                console.log(this.currentCommand);
-                this.addToTerminalContent(this.errorMessageInvalidDirectory);
+                this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
                 break;
             case "cat":
+                break;
+            case "clear":
+                this.frontend.clearTerminal();
                 break;
         }
     }

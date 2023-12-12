@@ -10,7 +10,7 @@ export default class TerminalProperties {
                             |__/           `;
 
     customDefaultText = ["Portfolio of Nils Meijer [Version 10.12.2023]",
-        "(c) Meijer Inc. All rights reserved."]
+        "(c) Meijer Inc. All rights reserved. Work in progress."]
 
     specialKeys = ["Shift", "CapsLock", "Enter", "Control", "ContextMenu", "Tab", "Alt",
         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
@@ -22,7 +22,8 @@ export default class TerminalProperties {
         ["help", "Lists all commands available."],
         ["dir", "Lists all subdirectories of this directory."],
         ["cd", "Move into specified directory."],
-        ["type", "Show content of specified file."]
+        ["type", "Show content of specified file."],
+        ["clear", "Clear the terminal screen"]
     ]);
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";
     errorMessageInvalidDirectory = "The system cannot find the path specified.";

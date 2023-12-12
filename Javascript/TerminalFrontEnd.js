@@ -17,10 +17,10 @@ export default class TerminalFrontEnd {
     constructor(scene) {
         this.scene = scene;
         this.fontLoader = new FontLoader();
-        
+
         this.inputFieldGroup = new THREE.Group();
         this.terminalContentGroup = new THREE.Group();
-        
+
         this.inputFieldGroup.position.set(-9.3, -4.2, 0);
         this.terminalContentGroup.position.set(-9.3, -3.7, 0);
 
@@ -129,7 +129,7 @@ export default class TerminalFrontEnd {
     }
 
     updateInputField() {
-        if(this.inputFieldTextObject != undefined)
+        if (this.inputFieldTextObject != undefined)
             this.inputFieldGroup.remove(this.inputFieldTextObject);
 
         const textGeometry = new TextGeometry(this.inputFieldContent, {
@@ -146,5 +146,72 @@ export default class TerminalFrontEnd {
         const centerX = (boundingBox.min.x + boundingBox.max.x) / 2;
         const defaultOffset = 0.05;
         this.caretTick.position.x = centerX + (boundingBox.max.x / 2) + defaultOffset;
+    }
+
+    executeHelpCommand() {
+        this.addToTerminalContent("Valid commands are:")
+        const map = this.properties.validCommandsMap;
+        const keyArray = Array.from(map.keys())
+        const valueArray = Array.from(map.values());
+        for (let i = 0; i < keyArray.length; i++) {
+            this.addToTerminalContent("     " + keyArray[i] + " - " + valueArray[i]);
+        }
+    }
+
+    executeDirCommand(data) {
+        //Directories
+        this.addToTerminalContent("Subdirectories of " + this.currentDirectory);
+        const dirArray = data.directories.map(directory => {
+            // Replace everything before "/Dir" with an empty string
+            return directory.replace(/.*\/Terminal/, '');
+        });
+        for (let i = 0; i < dirArray.length; i++) {
+            let dirName = dirArray[i];
+            this.addToTerminalContent(" - " + dirName);
+        }
+
+        //Files
+        this.addToTerminalContent("Files in " + this.currentDirectory);
+        const fileArray = data.files.map(directory => {
+            // Replace everything before "/Dir" with an empty string
+            return directory.replace(/.*\/Terminal/, '');
+        });
+        for (let i = 0; i < fileArray.length; i++) {
+            let fileName = fileArray[i];
+            this.addToTerminalContent(" - " + fileName);
+        }
+    }
+
+    resetInputLine() {
+        this.inputFieldContent = this.properties.defaultTerminalLine + this.properties.addedToTerminalPath;
+        this.updateInputField();
+    }
+
+    clearTerminal() {
+        this.terminalContentGroup.children.forEach(child => {
+            // Step 2: Remove from the scene
+            this.terminalContentGroup.remove(child);
+        
+            // Step 3: Dispose of geometry and material
+            if (child.geometry) {
+                child.geometry.dispose();
+            }
+        
+            if (child.material) {
+                child.material.dispose();
+        
+                // Dispose of material's map if it exists
+                if (child.material.map) {
+                    child.material.map.dispose();
+                }
+            }
+        
+            // Step 4: Release references (optional)
+            child = null;
+        });
+        
+        // Step 5: Clear the group's children array
+        this.terminalContentGroup.children.length = 0;
+        
     }
 }
