@@ -68,7 +68,15 @@ export default class TerminalFrontEnd {
         this.currentDirectory = this.properties.defaultTerminalLine;
         this.inputFieldContent = this.properties.defaultTerminalLine;
 
-        //setTimeout(() => this.graduallyCreateStartingContent(this.properties.asciiArt, this.asciiFont), 500);
+        const lines = this.properties.asciiArt.split('\n');
+        
+        let delay = 0;
+        // Print each line separately
+        lines.forEach(line => {
+            setTimeout(() => this.graduallyCreateStartingContent(line, this.asciiFont, 0), delay);
+            delay += 100;
+        });
+
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[0], this.defaultFont), 1000);
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[1], this.defaultFont), 1500);
         setTimeout(() => this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.defaultFont), 2000);
@@ -81,8 +89,8 @@ export default class TerminalFrontEnd {
         this.startingUp = false;
     }
 
-    graduallyCreateStartingContent(text, font) {
-        this.addToTerminalContent(text, font);
+    graduallyCreateStartingContent(text, font, xPos = 0) {
+        this.addToTerminalContent(text, font, 0.12, xPos);
     }
 
     createBackground() {
@@ -106,7 +114,7 @@ export default class TerminalFrontEnd {
 
     }
 
-    addToTerminalContent(textGiven, fontGiven, customFontSize = 0.12) {
+    addToTerminalContent(textGiven, fontGiven = this.defaultFont, customFontSize = 0.12, customXPos = 0) {
         let newLine;
 
         if (textGiven == undefined) {
@@ -121,10 +129,10 @@ export default class TerminalFrontEnd {
             height: 0.01,
         });
         newLine = new THREE.Mesh(textGeometry);
+        newLine.position.x = customXPos;
 
         // Using split to count occurrences of "\n"
         if (this.previousLine != undefined) {
-            console.log(this.previousLine);
             const lastLineCount = (this.previousLine.match(/\n/g) || []).length + 1;
             const lineHeight = 0.28;
             const cumulativeHeight = lineHeight * lastLineCount;
@@ -141,7 +149,7 @@ export default class TerminalFrontEnd {
     }
 
     createCursorTick() {
-        const cursorGeometry = new THREE.BoxGeometry(0.3, 0.02, 0.01);
+        const cursorGeometry = new THREE.BoxGeometry(0.2, 0.02, 0.01);
         const cursorMaterial = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: new THREE.Color(0xffffff), emissiveIntensity: 1000 });
         this.caretTick = new THREE.Mesh(cursorGeometry, cursorMaterial);
         this.inputFieldGroup.add(this.caretTick);

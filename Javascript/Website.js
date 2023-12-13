@@ -23,7 +23,7 @@ export default class MainScene extends THREE.Scene {
         this.portfolioContent = new PortfolioContent(this);
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight.position.set(0, 0, 5);
+        dirLight.position.set(0, 0, 15);
         dirLight.castShadow = true;
         this.add(dirLight);
 
