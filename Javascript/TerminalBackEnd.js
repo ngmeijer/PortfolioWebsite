@@ -8,7 +8,7 @@ export default class TerminalBackEnd {
 
     async recursivelySearchDirectories() {
         try {
-            const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(`Terminal`)}`);
+            const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(`./C:`)}`);
             const data = await response.json();
 
             if (import.meta.env.MODE === 'development') {

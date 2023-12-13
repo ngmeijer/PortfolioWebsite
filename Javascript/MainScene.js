@@ -23,11 +23,15 @@ export default class MainScene extends THREE.Scene {
 
         this.backend = new TerminalBackEnd();
 
-        this.portfolioContent = new PortfolioContent();
+        this.portfolioContent = new PortfolioContent(this);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
-        directionalLight.position.set(1, 1, 1).normalize();
-        this.add(directionalLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(0, 0, 5);
+        dirLight.castShadow = true;
+        this.add(dirLight);
+
+        //this.add(new THREE.AmbientLight(0xffffff, 0.4));
+
 
         this.onDocumentKeyPress = this.onDocumentKeyPress.bind(this);
     }

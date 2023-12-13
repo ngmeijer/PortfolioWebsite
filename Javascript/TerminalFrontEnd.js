@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import PortfolioContent from './PortfolioContent';
 
 export default class TerminalFrontEnd {
     scene;
@@ -9,6 +10,7 @@ export default class TerminalFrontEnd {
     inputFieldGroup;
     terminalContentGroup;
     cursorVisible = true;
+    portfolioContent;
     caretTick;
     properties;
     inputFieldContent = "";
@@ -29,7 +31,6 @@ export default class TerminalFrontEnd {
         this.scene.add(this.terminalContentGroup);
 
         this.createCursorTick();
-        this.createBackground();
 
         (async () => {
             try {
@@ -164,8 +165,7 @@ export default class TerminalFrontEnd {
         //Directories
         this.addToTerminalContent("Subdirectories of " + this.currentDirectory);
         const dirArray = data.directories.map(directory => {
-            // Replace everything before "/Dir" with an empty string
-            return directory.replace(/.*\/Terminal/, '');
+            return directory.slice(2);
         });
         for (let i = 0; i < dirArray.length; i++) {
             let dirName = dirArray[i];
@@ -175,8 +175,7 @@ export default class TerminalFrontEnd {
         //Files
         this.addToTerminalContent("Files in " + this.currentDirectory);
         const fileArray = data.files.map(directory => {
-            // Replace everything before "/Dir" with an empty string
-            return directory.replace(/.*\/Terminal/, '');
+            return directory.slice(2);
         });
         for (let i = 0; i < fileArray.length; i++) {
             let fileName = fileArray[i];
