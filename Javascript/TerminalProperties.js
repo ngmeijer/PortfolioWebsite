@@ -17,8 +17,6 @@ export default class TerminalProperties {
         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
         "Insert", "Home", "PageUp", "PageDown", "Delete", "End",
         "Numlock", "ScrollLock", "Pause", "Escape", "Meta", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"]
-    defaultTerminalLine = "C:\\>";
-    addedToTerminalPath = "";
     validCommandsMap = new Map([
         ["help", "Lists all commands available."],
         ["dir", "Lists all subdirectories of this directory."],
@@ -29,4 +27,8 @@ export default class TerminalProperties {
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";
     errorMessageInvalidDirectory = "The system cannot find the path specified.";
     helpMessage = "Use 'help' to show valid commands.";
+
+    //
+    rootDirectory = "C:/";
+    currentDirectory;
 }

@@ -16,7 +16,6 @@ export default class TerminalFrontEnd {
     properties;
     inputFieldContent = "";
     inputFieldTextObject;
-    currentDirectory = "";
     startingUp;
     previousLine = "";
 
@@ -25,6 +24,7 @@ export default class TerminalFrontEnd {
         this.properties = properties;
         this.fontLoader = new FontLoader();
         this.startingUp = true;
+
         this.inputFieldGroup = new THREE.Group();
         this.terminalContentGroup = new THREE.Group();
 
@@ -34,7 +34,7 @@ export default class TerminalFrontEnd {
         this.scene.add(this.inputFieldGroup);
         this.scene.add(this.terminalContentGroup);
 
-        this.createCursorTick();
+        this.createCaretTick();
 
         (async () => {
             try {
@@ -65,11 +65,10 @@ export default class TerminalFrontEnd {
     }
 
     createTerminal() {
-        this.currentDirectory = this.properties.defaultTerminalLine;
         this.inputFieldContent = this.properties.defaultTerminalLine;
 
         const lines = this.properties.asciiArt.split('\n');
-        
+
         let delay = 0;
         // Print each line separately
         lines.forEach(line => {
@@ -79,18 +78,51 @@ export default class TerminalFrontEnd {
 
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[0], this.defaultFont), 1000);
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[1], this.defaultFont), 1500);
-        setTimeout(() => this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.defaultFont), 2000);
+        setTimeout(() => {
+            this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.defaultFont);
+            this.startingUp = false;
+        }, 2000);
 
+        console.log(this.caretTick);
         setInterval(() => {
             this.loopCursorTick();
         }, 600);
         this.createInputLineBackground();
         this.updateInputField();
-        this.startingUp = false;
     }
 
     graduallyCreateStartingContent(text, font, xPos = 0) {
         this.addToTerminalContent(text, font, 0.12, xPos);
+    }
+
+    createCaretTick() {
+        const cursorGeometry = new THREE.BoxGeometry(0.2, 0.02, 0.01);
+        const cursorMaterial = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: new THREE.Color(0xffffff), emissiveIntensity: 1000 });
+        this.caretTick = new THREE.Mesh(cursorGeometry, cursorMaterial);
+        this.inputFieldGroup.add(this.caretTick);
+    }
+
+    loopCursorTick() {
+        switch (this.cursorVisible) {
+            case true:
+                this.enableCursorTick(false);
+                break;
+            case false:
+                this.enableCursorTick(true);
+                break;
+        }
+        this.cursorVisible = !this.cursorVisible;
+    }
+
+    enableCursorTick(state) {
+        switch (state) {
+            case true:
+                this.inputFieldGroup.remove(this.caretTick);
+                break;
+            case false:
+                this.inputFieldGroup.add(this.caretTick);
+                break;
+        }
     }
 
     createBackground() {
@@ -148,36 +180,6 @@ export default class TerminalFrontEnd {
         this.previousLine = textGiven;
     }
 
-    createCursorTick() {
-        const cursorGeometry = new THREE.BoxGeometry(0.2, 0.02, 0.01);
-        const cursorMaterial = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: new THREE.Color(0xffffff), emissiveIntensity: 1000 });
-        this.caretTick = new THREE.Mesh(cursorGeometry, cursorMaterial);
-        this.inputFieldGroup.add(this.caretTick);
-    }
-
-    loopCursorTick() {
-        switch (this.cursorVisible) {
-            case true:
-                this.enableCursorTick(false);
-                break;
-            case false:
-                this.enableCursorTick(true);
-                break;
-        }
-        this.cursorVisible = !this.cursorVisible;
-    }
-
-    enableCursorTick(state) {
-        switch (state) {
-            case true:
-                this.inputFieldGroup.remove(this.caretTick);
-                break;
-            case false:
-                this.inputFieldGroup.add(this.caretTick);
-                break;
-        }
-    }
-
     updateInputField() {
         if (this.inputFieldTextObject != undefined)
             this.inputFieldGroup.remove(this.inputFieldTextObject);
@@ -195,6 +197,7 @@ export default class TerminalFrontEnd {
         const boundingBox = this.inputFieldTextObject.geometry.boundingBox;
         const centerX = (boundingBox.min.x + boundingBox.max.x) / 2;
         const defaultOffset = 0.2;
+        const xPos = centerX + (boundingBox.max.x / 2) + defaultOffset;
         this.caretTick.position.x = centerX + (boundingBox.max.x / 2) + defaultOffset;
     }
 
@@ -210,17 +213,17 @@ export default class TerminalFrontEnd {
 
     executeDirCommand(data) {
         //Directories
-        this.addToTerminalContent("Subdirectories of " + this.currentDirectory);
+        this.addToTerminalContent("Subdirectories of " + this.properties.currentDirectory);
         const dirArray = data.directories.map(directory => {
-            return directory.slice(2);
+            return directory.slice(5);
         });
         for (let i = 0; i < dirArray.length; i++) {
             let dirName = dirArray[i];
-            this.addToTerminalContent(" - " + dirName);
+            this.addToTerminalContent(" - " + dirName + "/");
         }
 
         //Files
-        this.addToTerminalContent("Files in " + this.currentDirectory);
+        this.addToTerminalContent("Files in " + this.properties.currentDirectory);
         const fileArray = data.files.map(directory => {
             return directory.slice(2);
         });
@@ -231,7 +234,10 @@ export default class TerminalFrontEnd {
     }
 
     resetInputLine() {
-        this.inputFieldContent = this.currentDirectory;
+        //broken
+        this.properties.formattedDir = this.reformatDirectory(this.properties.currentDirectory);
+        console.log(this.properties.formattedDir);
+        this.inputFieldContent = this.properties.formattedDir;
         this.updateInputField();
     }
 
@@ -250,5 +256,13 @@ export default class TerminalFrontEnd {
             child = null;
         });
         this.terminalContentGroup.children.length = 0;
+    }
+
+    reformatDirectory(unformattedDir) {
+        //Replace each / with a \
+        //Add a > at the end of the directory.
+        console.log(unformattedDir);
+        let formattedDir = unformattedDir.replace(/\//g, "\\");
+        formattedDir += ">";
     }
 }
