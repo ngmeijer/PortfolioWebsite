@@ -1,13 +1,22 @@
 export default class TerminalProperties {
     asciiArt = `                                                                                                                                                                       
- _   _ _ _      ___  ___     _ _           
-| \ | (_) |     |  \/  |    (_|_)          
-|  \| |_| |___  | .  . | ___ _ _  ___ _ __ 
-| .   | | / __| | |\/| |/ _ \ | |/ _ \ '__|
-| |\  | | \__ \ | |  | |  __/ | |  __/ |   
-\_| \_/_|_|___/ \_|  |_/\___|_| |\___|_|   
-                             _/ |          
-                            |__/           `;
+    ________   ___  ___       ________                              
+    |\   ___  \|\  \|\  \     |\   ____\                             
+    \ \  \\ \  \ \  \ \  \    \ \  \___|_                            
+     \ \  \\ \  \ \  \ \  \    \ \_____  \                           
+      \ \  \\ \  \ \  \ \  \____\|____|\  \                          
+       \ \__\\ \__\ \__\ \_______\____\_\  \                         
+        \|__| \|__|\|__|\|_______|\_________\                        
+                                 \|_________|                        
+                                                                     
+                                                                     
+     _____ ______   _______   ___        ___  _______   ________     
+    |\   _ \  _   \|\  ___ \ |\  \      |\  \|\  ___ \ |\   __  \    
+    \ \  \\\__\ \  \ \   __/|\ \  \     \ \  \ \   __/|\ \  \|\  \   
+     \ \  \\|__| \  \ \  \_|/_\ \  \  __ \ \  \ \  \_|/_\ \   _  _\  
+      \ \  \    \ \  \ \  \_|\ \ \  \|\  \\_\  \ \  \_|\ \ \  \\  \| 
+       \ \__\    \ \__\ \_______\ \__\ \________\ \_______\ \__\\ _\ 
+        \|__|     \|__|\|_______|\|__|\|________|\|_______|\|__|\|__|`;
 
     customDefaultText = ["Portfolio of Nils Meijer [Version 10.12.2023]",
         "(c) Meijer Inc. All rights reserved. Work in progress."]
@@ -21,8 +30,8 @@ export default class TerminalProperties {
     validCommandsMap = new Map([
         ["help", "Lists all commands available."],
         ["dir", "Lists all subdirectories of this directory."],
-        ["cd", "Move into specified directory."],
-        ["type", "Show content of specified file."],
+        ["cd", "Move into specified directory.\nExample: 'cd Portfolio' will move current directory to Portfolio.\n'./' will move current directory one level up."],
+        ["type", "Show content of specified file.\nExample: 'type AI_Theatre' will display the contents of that file."],
         ["clear", "Clear the terminal screen"]
     ]);
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";

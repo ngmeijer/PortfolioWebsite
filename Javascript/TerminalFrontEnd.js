@@ -6,7 +6,8 @@ import PortfolioContent from './PortfolioContent';
 export default class TerminalFrontEnd {
     scene;
     fontLoader;
-    loadedFont;
+    defaultFont;
+    asciiFont;
     inputFieldGroup;
     terminalContentGroup;
     cursorVisible = true;
@@ -16,12 +17,14 @@ export default class TerminalFrontEnd {
     inputFieldContent = "";
     inputFieldTextObject;
     currentDirectory = "";
+    startingUp;
+    previousLine = "";
 
     constructor(scene, properties) {
         this.scene = scene;
         this.properties = properties;
         this.fontLoader = new FontLoader();
-
+        this.startingUp = true;
         this.inputFieldGroup = new THREE.Group();
         this.terminalContentGroup = new THREE.Group();
 
@@ -45,8 +48,14 @@ export default class TerminalFrontEnd {
 
     async loadFont() {
         try {
-            this.loadedFont = await new Promise((resolve, reject) => {
+            this.defaultFont = await new Promise((resolve, reject) => {
                 this.fontLoader.load('../../static/fonts/hack.json', (font) => {
+                    resolve(font);
+                }, undefined, reject);
+            });
+
+            this.asciiFont = this.defaultFont = await new Promise((resolve, reject) => {
+                this.fontLoader.load('../../static/fonts/Courier.json', (font) => {
                     resolve(font);
                 }, undefined, reject);
             });
@@ -59,16 +68,21 @@ export default class TerminalFrontEnd {
         this.currentDirectory = this.properties.defaultTerminalLine;
         this.inputFieldContent = this.properties.defaultTerminalLine;
 
-        //this.addToTerminalContent(this.asciiArt, 0.2);
-        this.addToTerminalContent(this.properties.customDefaultText[0])
-        this.addToTerminalContent(this.properties.customDefaultText[1])
-        this.addToTerminalContent("Enter 'help' to show a list of available commands.")
+        //setTimeout(() => this.graduallyCreateStartingContent(this.properties.asciiArt, this.asciiFont), 500);
+        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[0], this.defaultFont), 1000);
+        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[1], this.defaultFont), 1500);
+        setTimeout(() => this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.defaultFont), 2000);
 
         setInterval(() => {
             this.loopCursorTick();
         }, 600);
         this.createInputLineBackground();
         this.updateInputField();
+        this.startingUp = false;
+    }
+
+    graduallyCreateStartingContent(text, font) {
+        this.addToTerminalContent(text, font);
     }
 
     createBackground() {
@@ -80,7 +94,7 @@ export default class TerminalFrontEnd {
         this.terminalContentGroup.add(this.backgroundPlane);
     }
 
-    createInputLineBackground(){
+    createInputLineBackground() {
         const backgroundGeometry = new THREE.BoxGeometry(8.4, 0.4, 0.2);
         const backgroundMaterial = new THREE.MeshPhongMaterial({ color: 0x262626 });
         this.inputLineBackground = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
@@ -88,38 +102,49 @@ export default class TerminalFrontEnd {
         this.inputFieldGroup.add(this.inputLineBackground);
     }
 
-    selectInputLine(){
-        
+    selectInputLine() {
+
     }
 
-    addToTerminalContent(textGiven, customFontSize = 0.12) {
+    addToTerminalContent(textGiven, fontGiven, customFontSize = 0.12) {
         let newLine;
 
         if (textGiven == undefined) {
             console.log("text given is not valid.")
             return;
         }
-        const textGeometry = new TextGeometry(textGiven, {
-            font: this.loadedFont,
+        const textWithTabs = textGiven.replace(/\n/g, '\n          ');
+
+        const textGeometry = new TextGeometry(textWithTabs, {
+            font: fontGiven,
             size: customFontSize,
             height: 0.01,
         });
         newLine = new THREE.Mesh(textGeometry);
 
-        this.terminalContentGroup.traverse(function (object) {
-            if (object.type != "Group")
-                object.position.y += 0.28;
-        });
+        // Using split to count occurrences of "\n"
+        if (this.previousLine != undefined) {
+            console.log(this.previousLine);
+            const lastLineCount = (this.previousLine.match(/\n/g) || []).length + 1;
+            const lineHeight = 0.28;
+            const cumulativeHeight = lineHeight * lastLineCount;
+
+            this.terminalContentGroup.traverse(function (object) {
+
+                if (object.type != "Group")
+                    object.position.y += cumulativeHeight;
+            });
+        }
 
         this.terminalContentGroup.add(newLine);
+        this.previousLine = textGiven;
     }
 
     createCursorTick() {
-        const cursorGeometry = new THREE.BoxGeometry(0.02, 0.4, 0.02);
+        const cursorGeometry = new THREE.BoxGeometry(0.3, 0.02, 0.01);
         const cursorMaterial = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: new THREE.Color(0xffffff), emissiveIntensity: 1000 });
         this.caretTick = new THREE.Mesh(cursorGeometry, cursorMaterial);
         this.inputFieldGroup.add(this.caretTick);
-        this.caretTick.position.set(0.6, 0.1, 0);
     }
 
     loopCursorTick() {
@@ -150,7 +175,7 @@ export default class TerminalFrontEnd {
             this.inputFieldGroup.remove(this.inputFieldTextObject);
 
         const textGeometry = new TextGeometry(this.inputFieldContent, {
-            font: this.loadedFont,
+            font: this.defaultFont,
             size: 0.2,
             height: 0.01,
         });
@@ -161,7 +186,7 @@ export default class TerminalFrontEnd {
         this.inputFieldTextObject.geometry.computeBoundingBox();
         const boundingBox = this.inputFieldTextObject.geometry.boundingBox;
         const centerX = (boundingBox.min.x + boundingBox.max.x) / 2;
-        const defaultOffset = 0.05;
+        const defaultOffset = 0.2;
         this.caretTick.position.x = centerX + (boundingBox.max.x / 2) + defaultOffset;
     }
 

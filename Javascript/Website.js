@@ -31,6 +31,11 @@ export default class MainScene extends THREE.Scene {
     }
 
     onDocumentKeyPress(event) {
+        if(this.frontend.startingUp)
+        {
+            return;
+        }
+
         this.userIsTyping = true;
         const key = event.key;
         if (key == "Backspace") {

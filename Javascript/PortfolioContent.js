@@ -49,7 +49,6 @@ export default class PortfolioContent extends TemplatePage {
         newLine = new THREE.Mesh(textGeometry);
         this.portfolioWindow.add(newLine);
         newLine.position.set(-4.7,3.4,1);
-        console.log(newLine);
     }
 
     async loadFont() {
