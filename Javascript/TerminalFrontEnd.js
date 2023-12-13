@@ -17,14 +17,15 @@ export default class TerminalFrontEnd {
     inputFieldTextObject;
     currentDirectory = "";
 
-    constructor(scene) {
+    constructor(scene, properties) {
         this.scene = scene;
+        this.properties = properties;
         this.fontLoader = new FontLoader();
 
         this.inputFieldGroup = new THREE.Group();
         this.terminalContentGroup = new THREE.Group();
 
-        this.inputFieldGroup.position.set(-9.3, -4.2, 0);
+        this.inputFieldGroup.position.set(-9.3, -4.5, 0);
         this.terminalContentGroup.position.set(-9.3, -3.7, 0);
 
         this.scene.add(this.inputFieldGroup);
@@ -66,6 +67,7 @@ export default class TerminalFrontEnd {
         setInterval(() => {
             this.loopCursorTick();
         }, 600);
+        this.createInputLineBackground();
         this.updateInputField();
     }
 
@@ -76,6 +78,18 @@ export default class TerminalFrontEnd {
         this.backgroundPlane.position.set(0.6, 0.1, -0.1);
         this.backgroundPlane.rotateOnAxis(new THREE.Vector3(1, 0, 0), 90);
         this.terminalContentGroup.add(this.backgroundPlane);
+    }
+
+    createInputLineBackground(){
+        const backgroundGeometry = new THREE.BoxGeometry(8.4, 0.4, 0.2);
+        const backgroundMaterial = new THREE.MeshPhongMaterial({ color: 0x262626 });
+        this.inputLineBackground = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
+        this.inputLineBackground.position.set(4.1, 0.1, -0.1);
+        this.inputFieldGroup.add(this.inputLineBackground);
+    }
+
+    selectInputLine(){
+        
     }
 
     addToTerminalContent(textGiven, customFontSize = 0.12) {

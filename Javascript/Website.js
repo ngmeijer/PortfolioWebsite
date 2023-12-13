@@ -17,10 +17,7 @@ export default class MainScene extends THREE.Scene {
     constructor() {
         super()
         this.terminalProps = new TerminalProperties();
-        this.frontend = new TerminalFrontEnd(this);
-        this.frontend.scene = this;
-        this.frontend.properties = this.terminalProps;
-
+        this.frontend = new TerminalFrontEnd(this, this.terminalProps);
         this.backend = new TerminalBackEnd();
 
         this.portfolioContent = new PortfolioContent(this);
@@ -29,9 +26,6 @@ export default class MainScene extends THREE.Scene {
         dirLight.position.set(0, 0, 5);
         dirLight.castShadow = true;
         this.add(dirLight);
-
-        //this.add(new THREE.AmbientLight(0xffffff, 0.4));
-
 
         this.onDocumentKeyPress = this.onDocumentKeyPress.bind(this);
     }
@@ -106,6 +100,7 @@ export default class MainScene extends THREE.Scene {
         if (!this.terminalProps.validCommandsMap.has(this.currentCommand)) {
             console.log()
             this.frontend.addToTerminalContent("'" + this.currentCommand + "'" + this.terminalProps.errorMessageInvalidCommand);
+            this.frontend.addToTerminalContent(this.terminalProps.helpMessage);
             return false;
         }
 
@@ -156,7 +151,6 @@ export default class MainScene extends THREE.Scene {
                             const removedBracket = this.frontend.currentDirectory.slice(0, -1);
                             this.frontend.currentDirectory = removedBracket + (this.givenDirectory + ">");
                             this.frontend.resetInputLine();
-                            console.log("moved to directory.")
                         }
                     } catch (error) {
                         console.error("Error checking for specific directory");
@@ -169,9 +163,5 @@ export default class MainScene extends THREE.Scene {
                 this.frontend.clearTerminal();
                 break;
         }
-    }
-
-    update() {
-
     }
 }

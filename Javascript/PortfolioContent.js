@@ -29,7 +29,7 @@ export default class PortfolioContent extends TemplatePage {
 
     createPortfolioWindow() {
         const geometry = new THREE.BoxGeometry(10, 10, 1);
-        const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const material = new THREE.MeshPhongMaterial({ color: 0x262626 });
         const portfolioBackground = new THREE.Mesh(geometry, material);
         this.portfolioWindow.add(portfolioBackground);
         this.portfolioWindow.position.set(4, 0, 0);

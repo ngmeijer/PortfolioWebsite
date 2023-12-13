@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Stats from 'stats.js';
-import TestScene from './MainScene.js';
+import TestScene from './Website.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const scene = new TestScene();
@@ -25,7 +25,7 @@ document.body.appendChild(renderer.domElement);
 const stats = new Stats()
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
-//const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 window.addEventListener('resize', onResize);
 function onResize() {
     sizes.width = window.innerWidth;
@@ -40,7 +40,6 @@ function onResize() {
 
 function animate() {
     stats.begin();
-    scene.update();
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     stats.end();

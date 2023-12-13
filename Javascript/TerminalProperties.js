@@ -27,4 +27,5 @@ export default class TerminalProperties {
     ]);
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";
     errorMessageInvalidDirectory = "The system cannot find the path specified.";
+    helpMessage = "Use 'help' to show valid commands.";
 }
