@@ -1,18 +1,19 @@
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import PortfolioContent from './PortfolioContent';
 
 export default class TerminalFrontEnd {
     scene;
     fontLoader;
     defaultFont;
     asciiFont;
+
     inputFieldGroup;
     terminalContentGroup;
+    
     cursorVisible = true;
-    portfolioContent;
     caretTick;
+    
     properties;
     inputFieldContent = "";
     inputFieldTextObject;
@@ -83,12 +84,11 @@ export default class TerminalFrontEnd {
             this.startingUp = false;
         }, 2000);
 
-        console.log(this.caretTick);
         setInterval(() => {
             this.loopCursorTick();
         }, 600);
         this.createInputLineBackground();
-        this.updateInputField();
+        this.resetInputLine();
     }
 
     graduallyCreateStartingContent(text, font, xPos = 0) {
@@ -215,7 +215,7 @@ export default class TerminalFrontEnd {
         //Directories
         this.addToTerminalContent("Subdirectories of " + this.properties.currentDirectory);
         const dirArray = data.directories.map(directory => {
-            return directory.slice(5);
+            return directory.slice(10);
         });
         for (let i = 0; i < dirArray.length; i++) {
             let dirName = dirArray[i];
@@ -224,8 +224,8 @@ export default class TerminalFrontEnd {
 
         //Files
         this.addToTerminalContent("Files in " + this.properties.currentDirectory);
-        const fileArray = data.files.map(directory => {
-            return directory.slice(2);
+        const fileArray = data.files.map(files => {
+            return files.slice(10);
         });
         for (let i = 0; i < fileArray.length; i++) {
             let fileName = fileArray[i];
@@ -235,8 +235,7 @@ export default class TerminalFrontEnd {
 
     resetInputLine() {
         //broken
-        this.properties.formattedDir = this.reformatDirectory(this.properties.currentDirectory);
-        console.log(this.properties.formattedDir);
+        this.reformatDirectory(this.properties.currentDirectory);
         this.inputFieldContent = this.properties.formattedDir;
         this.updateInputField();
     }
@@ -260,9 +259,11 @@ export default class TerminalFrontEnd {
 
     reformatDirectory(unformattedDir) {
         //Replace each / with a \
-        //Add a > at the end of the directory.
-        console.log(unformattedDir);
-        let formattedDir = unformattedDir.replace(/\//g, "\\");
+        // let formattedDir = unformattedDir.replace(/[\/.]/g, "\\");
+        // formattedDir += ">";
+
+        let formattedDir = unformattedDir;
         formattedDir += ">";
+        this.properties.formattedDir = formattedDir;
     }
 }

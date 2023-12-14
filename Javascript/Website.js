@@ -5,7 +5,7 @@ import TerminalFrontEnd from './TerminalFrontEnd.js';
 import TerminalBackEnd from './TerminalBackEnd.js';
 
 export default class MainScene extends THREE.Scene {
-    terminalProps;
+    properties;
     frontend;
     backend;
 
@@ -16,12 +16,12 @@ export default class MainScene extends THREE.Scene {
 
     constructor() {
         super()
-        this.terminalProps = new TerminalProperties();
-        this.frontend = new TerminalFrontEnd(this, this.terminalProps);
-        this.backend = new TerminalBackEnd();
+        this.properties = new TerminalProperties();
+        this.frontend = new TerminalFrontEnd(this, this.properties);
+        this.backend = new TerminalBackEnd(this.properties);
 
         this.portfolioContent = new PortfolioContent(this);
-        this.terminalProps.currentDirectory = `./C:`;
+        this.properties.currentDirectory = `MainDrive`;
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 1);
         dirLight.position.set(0, 0, 15);
@@ -53,12 +53,12 @@ export default class MainScene extends THREE.Scene {
 
         if (key == "Enter") {
             let trimmedString = this.frontend.inputFieldContent.trim();
-            if (trimmedString == this.terminalProps.currentDirectory)
+            if (trimmedString == this.properties.currentDirectory)
                 return;
             this.submitContent();
         }
 
-        if (this.terminalProps.specialKeys.includes(key))
+        if (this.properties.specialKeys.includes(key))
             return;
 
         this.frontend.inputFieldContent += key;
@@ -77,7 +77,6 @@ export default class MainScene extends THREE.Scene {
 
     submitContent() {
         this.frontend.addToTerminalContent(this.frontend.inputFieldContent);
-
         let isValid = this.checkIfCommandIsValid();
         this.frontend.resetInputLine();
         if (!isValid)
@@ -98,13 +97,13 @@ export default class MainScene extends THREE.Scene {
         this.pathUsedAsTarget = this.frontend.inputFieldContent.substring(bracketIndex + 1).trim();
 
         //Retrieve the command
-        let command = this.pathUsedAsTarget.split(" ")[0];
+        let command = this.extractDataFromInput("command");
         this.currentCommand = command.toLowerCase();
 
         //If array does not contain command, it is invalid. Throw error message to terminal.
-        if (!this.terminalProps.validCommandsMap.has(this.currentCommand)) {
-            this.frontend.addToTerminalContent("'" + this.currentCommand + "'" + this.terminalProps.errorMessageInvalidCommand);
-            this.frontend.addToTerminalContent(this.terminalProps.helpMessage);
+        if (!this.properties.validCommandsMap.has(this.currentCommand)) {
+            this.frontend.addToTerminalContent("'" + this.currentCommand + "'" + this.properties.errorMessageInvalidCommand);
+            this.frontend.addToTerminalContent(this.properties.helpMessage);
             return false;
         }
 
@@ -112,7 +111,7 @@ export default class MainScene extends THREE.Scene {
     }
 
     moveIntoDirectory(newDir) {
-        this.terminalProps.currentDirectory = newDir;
+        this.properties.currentDirectory = newDir;
     }
 
     executeCommand() {
@@ -124,54 +123,22 @@ export default class MainScene extends THREE.Scene {
             case "dir":
                 (async () => {
                     try {
-                        console.log(this.terminalProps.currentDirectory);
+                        console.log(this.properties.currentDirectory);
 
                         //TODO: implement dir for subdirectories
-                        const data = await this.backend.recursivelySearchDirectories(`./C:`);
+                        const data = await this.backend.recursivelySearchDirectories(`MainDrive`);
                         this.frontend.executeDirCommand(data);
                     } catch (error) {
                         console.error("Error fetching directories:", error);
                     }
                 })();
                 break;
-            //Move into specified directory. Also used for moving up in directories.
             case "cd":
-                //First check if is moving up.
                 const path = this.pathUsedAsTarget.substring(2).trim();
-                //TODO: check if current directory is C:\>.
-                if (path == "../") {
-                    console.log(this.terminalProps.currentDirectory);
-                    if (this.terminalProps.currentDirectory == "./C:") {
-                        console.log("already at root.")
-                        return;
-                    }
+                let movingUp = this.cdUp(path);
 
-                    //Move up to parent directory.
-                    this.backend.moveUpDirectory();
-                    this.frontend.resetInputLine();
-                    this.frontend.updateInputField();
-                    return;
-                }
-
-                //Moving down into directory.
-                (async () => {
-                    try {
-                        //Check if directory provided is valid.
-                        console.log(this.frontend.inputFieldContent);
-                        const validDirectory = await this.backend.checkDirectory(this.terminalProps.currentDirectory);
-                        if (validDirectory) {
-                            let formattedDir = this.frontend.reformatDirectory(this.terminalProps.currentDirectory);
-                            // console.log("Unformatted: ", this.terminalProps.currentDirectory, ". Formatted:", formattedDir);
-                            this.terminalProps.formattedDir = formattedDir;
-                            this.frontend.resetInputLine(formattedDir);
-                            this.frontend.inputFieldContent = "C:\>";
-                        } else {
-                            this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
-                        }
-                    } catch (error) {
-                        throw (error);
-                    }
-                })();
+                if (!movingUp)
+                    this.cdDown(path);
                 break;
             case "cat":
                 break;
@@ -179,5 +146,53 @@ export default class MainScene extends THREE.Scene {
                 this.frontend.clearTerminal();
                 break;
         }
+    }
+
+    cdUp(path) {
+        if (path == "../") {
+            console.log(this.properties.currentDirectory);
+            if (this.properties.currentDirectory == this.properties.rootDirectory) {
+                console.log("already at root.")
+                return;
+            }
+
+            //Move up to parent directory.
+            this.backend.moveUpDirectory();
+            console.log(this.properties.currentDirectory);
+            this.frontend.resetInputLine();
+            this.frontend.updateInputField();
+            return true;
+        } else return false;
+    }
+
+    extractDataFromInput(dataToExtract) {
+        switch (dataToExtract) {
+            case "command":
+                return this.pathUsedAsTarget.split(" ")[0];
+            case "path":
+                return this.pathUsedAsTarget.split(" ")[1];
+        }
+    }
+
+    cdDown() {
+        //Moving down into directory.
+        (async () => {
+            try {
+                //Extract directory from path
+                let targetSubDir = this.extractDataFromInput("path");
+                const validDirectory = await this.backend.checkDirectory(targetSubDir);
+                console.log(validDirectory);
+                if (!validDirectory) {
+                    this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
+                    return;
+                }
+
+                this.backend.moveDownDirectory(this.properties.currentDirectory, validDirectory);
+                this.frontend.reformatDirectory(this.properties.currentDirectory);
+                this.frontend.resetInputLine();
+            } catch (error) {
+                throw (error);
+            }
+        })();
     }
 }

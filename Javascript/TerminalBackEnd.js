@@ -1,10 +1,10 @@
 export default class TerminalBackEnd {
     directories;
     files;
+    properties;
 
-
-    constructor() {
-
+    constructor(properties) {
+        this.properties = properties;
     }
 
     async recursivelySearchDirectories(directoryToSearch) {
@@ -42,8 +42,8 @@ export default class TerminalBackEnd {
         //CurrentDirectory would look like "C:\Portfolio>".
         //Concatenation would look like "C:\Portfolio\AI_Theatre>".
         //Concatenate currentDirectory with newDirectory with correct formatting.
-
-
+        currentDirectory += newDirectory;
+        this.properties.currentDirectory = currentDirectory;
     }
 
     moveUpDirectory(currentDirectory) {

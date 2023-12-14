@@ -29,6 +29,7 @@ export default class TerminalProperties {
     helpMessage = "Use 'help' to show valid commands.";
 
     //
-    rootDirectory = "C:/";
+    rootDirectory = "MainDrive:/";
     currentDirectory;
+    formattedDir = "";
 }

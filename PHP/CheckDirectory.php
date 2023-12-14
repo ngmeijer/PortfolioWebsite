@@ -1,12 +1,14 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 
-$rootDirectory = __DIR__ . `/C:/`;
+$rootDirectory = __DIR__ . '/MainDrive/';
 
 // Get the directory path from the query parameter
 $dataFromJavascript = isset($_GET['data']) ? $_GET['data'] : '';
 
-if (is_dir($dataFromJavascript)) {
+echo "coming from php";
+
+if (is_dir("/". $dataFromJavascript)) {
     echo "true";
 } else {
     echo "false";
