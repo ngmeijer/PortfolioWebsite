@@ -9,30 +9,34 @@ export default class TerminalBackEnd {
 
     async recursivelySearchDirectories(directoryToSearch) {
         try {
-            const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(directoryToSearch)}`);
+            console.log(directoryToSearch);
+            const formattedPath = directoryToSearch.replace(/\\/g, "/");
+            console.log(formattedPath);
+            const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(formattedPath)}`);
             const data = await response.json();
+            console.log(data);
 
             this.directories = Object.values(data.directories);
             this.files = Object.values(data.files);
             return new Object({ directories: this.directories, files: this.files });
         } catch (error) {
-            if (import.meta.env.MODE === 'development') {
-                console.log("Error fetching directories:", error);
-            }
             throw error;
         }
     }
 
     async checkDirectory(directory) {
-        console.log("given directory:", directory)
         try {
-            const url = `https://nilsmeijer.com/Terminal/CheckDirectory.php?data=${encodeURIComponent(directory)}`;
+            const formattedPath = directory.replace(/\\/g, "/");
+            const url = `https://nilsmeijer.com/Terminal/CheckDirectory.php?data=${encodeURIComponent(formattedPath)}`;
             const response = await fetch(url);
             const isValid = await response.text();
-            console.log(response);
-            if (isValid == "true")
+            if (isValid.includes("true")) {
                 return true;
-            else return false;
+            }
+            else {
+                console.log("Received:", isValid);
+                return false;
+            }
         } catch (error) {
             throw error;
         }
@@ -42,15 +46,13 @@ export default class TerminalBackEnd {
         //CurrentDirectory would look like "C:\Portfolio>".
         //Concatenation would look like "C:\Portfolio\AI_Theatre>".
         //Concatenate currentDirectory with newDirectory with correct formatting.
-        currentDirectory += newDirectory;
-        this.properties.currentDirectory = currentDirectory;
+        this.properties.currentDirectory += ("\\" + newDirectory);
     }
 
     moveUpDirectory(currentDirectory) {
         //Removes last directory.
         //Filter for the last "\". Remove it and all characters behind it.
         //Add >
-        
 
     }
 }

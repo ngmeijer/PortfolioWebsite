@@ -10,10 +10,10 @@ export default class TerminalFrontEnd {
 
     inputFieldGroup;
     terminalContentGroup;
-    
+
     cursorVisible = true;
     caretTick;
-    
+
     properties;
     inputFieldContent = "";
     inputFieldTextObject;
@@ -213,20 +213,22 @@ export default class TerminalFrontEnd {
 
     executeDirCommand(data) {
         //Directories
-        this.addToTerminalContent("Subdirectories of " + this.properties.currentDirectory);
         const dirArray = data.directories.map(directory => {
             return directory.slice(10);
         });
+        this.addToTerminalContent("Found " + dirArray.length + " subdirectories in " + this.properties.currentDirectory);
+
         for (let i = 0; i < dirArray.length; i++) {
             let dirName = dirArray[i];
-            this.addToTerminalContent(" - " + dirName + "/");
+            const formattedPath = dirName.replace(/\//g, "\\");
+            this.addToTerminalContent(" - " + formattedPath + "\\");
         }
 
         //Files
-        this.addToTerminalContent("Files in " + this.properties.currentDirectory);
         const fileArray = data.files.map(files => {
             return files.slice(10);
         });
+        this.addToTerminalContent("Found " + fileArray.length + " file(s) in " + this.properties.currentDirectory);        
         for (let i = 0; i < fileArray.length; i++) {
             let fileName = fileArray[i];
             this.addToTerminalContent(" - " + fileName);

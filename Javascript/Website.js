@@ -126,10 +126,10 @@ export default class MainScene extends THREE.Scene {
                         console.log(this.properties.currentDirectory);
 
                         //TODO: implement dir for subdirectories
-                        const data = await this.backend.recursivelySearchDirectories(`MainDrive`);
+                        const data = await this.backend.recursivelySearchDirectories(this.properties.currentDirectory);
                         this.frontend.executeDirCommand(data);
                     } catch (error) {
-                        console.error("Error fetching directories:", error);
+                        throw(error);
                     }
                 })();
                 break;
@@ -180,16 +180,26 @@ export default class MainScene extends THREE.Scene {
             try {
                 //Extract directory from path
                 let targetSubDir = this.extractDataFromInput("path");
-                const validDirectory = await this.backend.checkDirectory(targetSubDir);
-                console.log(validDirectory);
+                let currentMainDir = this.properties.currentDirectory;
+
+                let path = "";
+                if (currentMainDir != "MainDrive")
+                    path = currentMainDir + "\\" + targetSubDir;
+                else
+                    path = targetSubDir;
+
+                console.log(path);
+                const validDirectory = await this.backend.checkDirectory(path);
                 if (!validDirectory) {
                     this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
                     return;
                 }
 
-                this.backend.moveDownDirectory(this.properties.currentDirectory, validDirectory);
+                console.log(this.properties.currentDirectory);
+                this.backend.moveDownDirectory(this.properties.currentDirectory, targetSubDir);
                 this.frontend.reformatDirectory(this.properties.currentDirectory);
                 this.frontend.resetInputLine();
+                console.log(this.properties.currentDirectory);
             } catch (error) {
                 throw (error);
             }

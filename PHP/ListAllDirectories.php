@@ -8,7 +8,7 @@ if (in_array($origin, $allowedOrigins)) {
 }
 
 // Get the directory path from the query parameter
-$path = isset($_GET['path']) ? $_GET['path'] : '';
+$path = isset($_GET['path']) ? urldecode($_GET['path']) : '';
 
 // Get the list of directories
 $directories = array_filter(glob($path . '/*'), 'is_dir');
