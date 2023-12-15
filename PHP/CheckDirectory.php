@@ -7,11 +7,9 @@ if (in_array($origin, $allowedOrigins)) {
     header('Access-Control-Allow-Credentials: true');
 }
 
-$rootDirectory = __DIR__ . "/MainDrive/";
-
 // Get the directory path from the query parameter
 $dataFromJavascript = isset($_GET['data']) ? $_GET['data'] : '';
-$finalPath = $rootDirectory . $dataFromJavascript;
+$finalPath = $dataFromJavascript;
 
 if (is_dir($finalPath)) {
     echo "true. Valid path: " . $finalPath;

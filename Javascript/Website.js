@@ -182,20 +182,12 @@ export default class MainScene extends THREE.Scene {
                 let targetSubDir = this.extractDataFromInput("path");
                 let currentMainDir = this.properties.currentDirectory;
 
-                let path = "";
-                if (currentMainDir != "MainDrive")
-                    path = currentMainDir + "\\" + targetSubDir;
-                else
-                    path = targetSubDir;
-
-                console.log(path);
-                const validDirectory = await this.backend.checkDirectory(path);
+                const validDirectory = await this.backend.checkDirectory(this.properties.currentDirectory);
                 if (!validDirectory) {
                     this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
                     return;
                 }
 
-                console.log(this.properties.currentDirectory);
                 this.backend.moveDownDirectory(this.properties.currentDirectory, targetSubDir);
                 this.frontend.reformatDirectory(this.properties.currentDirectory);
                 this.frontend.resetInputLine();

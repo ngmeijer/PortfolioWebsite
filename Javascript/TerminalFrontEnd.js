@@ -220,7 +220,9 @@ export default class TerminalFrontEnd {
 
         for (let i = 0; i < dirArray.length; i++) {
             let dirName = dirArray[i];
-            const formattedPath = dirName.replace(/\//g, "\\");
+            let lastIndex = dirName.lastIndexOf("/");
+            let result = dirName.substring(lastIndex + 1);
+            const formattedPath = result.replace(/\//g, "\\");
             this.addToTerminalContent(" - " + formattedPath + "\\");
         }
 
@@ -228,7 +230,7 @@ export default class TerminalFrontEnd {
         const fileArray = data.files.map(files => {
             return files.slice(10);
         });
-        this.addToTerminalContent("Found " + fileArray.length + " file(s) in " + this.properties.currentDirectory);        
+        this.addToTerminalContent("Found " + fileArray.length + " file(s) in " + this.properties.currentDirectory);
         for (let i = 0; i < fileArray.length; i++) {
             let fileName = fileArray[i];
             this.addToTerminalContent(" - " + fileName);
@@ -236,7 +238,6 @@ export default class TerminalFrontEnd {
     }
 
     resetInputLine() {
-        //broken
         this.reformatDirectory(this.properties.currentDirectory);
         this.inputFieldContent = this.properties.formattedDir;
         this.updateInputField();
@@ -260,10 +261,6 @@ export default class TerminalFrontEnd {
     }
 
     reformatDirectory(unformattedDir) {
-        //Replace each / with a \
-        // let formattedDir = unformattedDir.replace(/[\/.]/g, "\\");
-        // formattedDir += ">";
-
         let formattedDir = unformattedDir;
         formattedDir += ">";
         this.properties.formattedDir = formattedDir;
