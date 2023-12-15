@@ -29,7 +29,7 @@ export default class TerminalProperties {
     helpMessage = "Use 'help' to show valid commands.";
 
     //
-    rootDirectory = "MainDrive:/";
+    rootDirectory = "MainDrive";
     currentDirectory;
     formattedDir = "";
 }

@@ -129,16 +129,16 @@ export default class MainScene extends THREE.Scene {
                         const data = await this.backend.recursivelySearchDirectories(this.properties.currentDirectory);
                         this.frontend.executeDirCommand(data);
                     } catch (error) {
-                        throw(error);
+                        throw (error);
                     }
                 })();
                 break;
             case "cd":
                 const path = this.pathUsedAsTarget.substring(2).trim();
-                let movingUp = this.cdUp(path);
-
-                if (!movingUp)
-                    this.cdDown(path);
+                if (path !== "../") {
+                    this.cdDown();
+                }
+                else this.cdUp();
                 break;
             case "cat":
                 break;
@@ -146,23 +146,6 @@ export default class MainScene extends THREE.Scene {
                 this.frontend.clearTerminal();
                 break;
         }
-    }
-
-    cdUp(path) {
-        if (path == "../") {
-            console.log(this.properties.currentDirectory);
-            if (this.properties.currentDirectory == this.properties.rootDirectory) {
-                console.log("already at root.")
-                return;
-            }
-
-            //Move up to parent directory.
-            this.backend.moveUpDirectory();
-            console.log(this.properties.currentDirectory);
-            this.frontend.resetInputLine();
-            this.frontend.updateInputField();
-            return true;
-        } else return false;
     }
 
     extractDataFromInput(dataToExtract) {
@@ -174,27 +157,40 @@ export default class MainScene extends THREE.Scene {
         }
     }
 
-    cdDown() {
-        //Moving down into directory.
-        (async () => {
-            try {
-                //Extract directory from path
-                let targetSubDir = this.extractDataFromInput("path");
-                let currentMainDir = this.properties.currentDirectory;
+    cdUp() {
+        if (this.properties.currentDirectory == this.properties.rootDirectory) {
+            console.log("already at root.")
+            return;
+        }
 
-                const validDirectory = await this.backend.checkDirectory(this.properties.currentDirectory);
-                if (!validDirectory) {
-                    this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
-                    return;
-                }
+        //Move up to parent directory.
+        this.backend.moveUpDirectory();
+        this.frontend.resetInputLine();
+        this.frontend.updateInputField();
+    }
 
-                this.backend.moveDownDirectory(this.properties.currentDirectory, targetSubDir);
-                this.frontend.reformatDirectory(this.properties.currentDirectory);
-                this.frontend.resetInputLine();
-                console.log(this.properties.currentDirectory);
-            } catch (error) {
-                throw (error);
+    async cdDown() {
+        try {
+            //Moving down into directory.
+            const isValid = await this.backend.checkDirectory(this.properties.currentDirectory);
+
+            if (!isValid) {
+                this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
+                return;
             }
-        })();
+
+            //Extract directory from path
+            let targetSubDir = this.extractDataFromInput("path");
+            if (targetSubDir === undefined || targetSubDir === "") {
+                this.frontend.addToTerminalContent("No path provided. Aborting.");
+            }
+
+            this.backend.moveDownDirectory(targetSubDir);
+            this.frontend.reformatDirectory(this.properties.currentDirectory);
+            this.frontend.resetInputLine();
+        } catch (error) {
+            console.error(error);
+            // Handle the error appropriately if needed
+        }
     }
 }

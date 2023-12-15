@@ -9,12 +9,9 @@ export default class TerminalBackEnd {
 
     async recursivelySearchDirectories(directoryToSearch) {
         try {
-            console.log(directoryToSearch);
             const formattedPath = directoryToSearch.replace(/\\/g, "/");
-            console.log(formattedPath);
             const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(formattedPath)}`);
             const data = await response.json();
-            console.log(data);
 
             this.directories = Object.values(data.directories);
             this.files = Object.values(data.files);
@@ -42,17 +39,13 @@ export default class TerminalBackEnd {
         }
     }
 
-    moveDownDirectory(currentDirectory, newDirectory) {
-        //CurrentDirectory would look like "C:\Portfolio>".
-        //Concatenation would look like "C:\Portfolio\AI_Theatre>".
-        //Concatenate currentDirectory with newDirectory with correct formatting.
+    moveDownDirectory(newDirectory) {
         this.properties.currentDirectory += ("\\" + newDirectory);
     }
 
-    moveUpDirectory(currentDirectory) {
-        //Removes last directory.
-        //Filter for the last "\". Remove it and all characters behind it.
-        //Add >
-
+    moveUpDirectory() {
+        let lastIndex = this.properties.currentDirectory.lastIndexOf("\\");
+        let result = this.properties.currentDirectory.substring(0, lastIndex);
+        this.properties.currentDirectory = result;
     }
 }
