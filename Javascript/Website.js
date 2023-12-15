@@ -123,8 +123,6 @@ export default class MainScene extends THREE.Scene {
             case "dir":
                 (async () => {
                     try {
-                        console.log(this.properties.currentDirectory);
-
                         //TODO: implement dir for subdirectories
                         const data = await this.backend.recursivelySearchDirectories(this.properties.currentDirectory);
                         this.frontend.executeDirCommand(data);
@@ -136,11 +134,20 @@ export default class MainScene extends THREE.Scene {
             case "cd":
                 const path = this.pathUsedAsTarget.substring(2).trim();
                 if (path !== "../") {
-                    this.cdDown();
+                    this.cdDown(path);
                 }
                 else this.cdUp();
                 break;
-            case "cat":
+            case "type":
+                let fileName = this.extractDataFromInput("path");
+                if (fileName === undefined) {
+                    let errorMessage = "File does not exist."
+                    this.frontend.addToTerminalContent(errorMessage);
+                    return;
+                }
+                let terminalInfo = "Retrieving contents of file '" + fileName + "'...";
+                this.frontend.addToTerminalContent(terminalInfo);
+                this.backend.readFile(this.pathUsedAsTarget);
                 break;
             case "clear":
                 this.frontend.clearTerminal();
@@ -169,14 +176,15 @@ export default class MainScene extends THREE.Scene {
         this.frontend.updateInputField();
     }
 
-    async cdDown() {
+    async cdDown(path) {
         try {
             //Moving down into directory.
-            const isValid = await this.backend.checkDirectory(this.properties.currentDirectory);
-
-            if (!isValid) {
+            const pathToCheck = this.properties.currentDirectory + "/" + path;
+            const data = await this.backend.checkDirectory(pathToCheck);
+            console.log(data);
+            if (data.Valid === false) {
                 this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
-                return;
+                return data;
             }
 
             //Extract directory from path
@@ -185,12 +193,11 @@ export default class MainScene extends THREE.Scene {
                 this.frontend.addToTerminalContent("No path provided. Aborting.");
             }
 
-            this.backend.moveDownDirectory(targetSubDir);
-            this.frontend.reformatDirectory(this.properties.currentDirectory);
+            this.backend.moveDownDirectory(data.Name);
+            this.frontend.reformatDirectory(data.Name);
             this.frontend.resetInputLine();
         } catch (error) {
             console.error(error);
-            // Handle the error appropriately if needed
         }
     }
 }

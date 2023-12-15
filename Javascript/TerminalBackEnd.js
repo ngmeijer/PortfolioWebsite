@@ -7,9 +7,9 @@ export default class TerminalBackEnd {
         this.properties = properties;
     }
 
-    async recursivelySearchDirectories(directoryToSearch) {
+    async recursivelySearchDirectories(directory) {
         try {
-            const formattedPath = directoryToSearch.replace(/\\/g, "/");
+            const formattedPath = directory.replace(/\\/g, "/");
             const response = await fetch(`https://nilsmeijer.com/Terminal/ListAllDirectories.php?path=${encodeURIComponent(formattedPath)}`);
             const data = await response.json();
 
@@ -25,15 +25,22 @@ export default class TerminalBackEnd {
         try {
             const formattedPath = directory.replace(/\\/g, "/");
             const url = `https://nilsmeijer.com/Terminal/CheckDirectory.php?data=${encodeURIComponent(formattedPath)}`;
+            console.log(formattedPath);
             const response = await fetch(url);
-            const isValid = await response.text();
-            if (isValid.includes("true")) {
-                return true;
-            }
-            else {
-                console.log("Received:", isValid);
-                return false;
-            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async readFile(directory) {
+        try {
+            const formattedPath = directory.replace(/\\/g, "/");
+            const url = `https://nilsmeijer.com/Terminal/GetFile.php?data=${encodeURIComponent(formattedPath)}`;
+            const response = await fetch(url);
+            const fileContent = await response.text();
+            console.log(fileContent);
         } catch (error) {
             throw error;
         }
