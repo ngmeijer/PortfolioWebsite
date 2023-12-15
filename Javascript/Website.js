@@ -1,13 +1,18 @@
 import * as THREE from 'three';
 import PortfolioContent from './PortfolioContent.js';
 import TerminalProperties from './TerminalProperties.js';
+import PortfolioProperties from './PortfolioProperties.js';
 import TerminalFrontEnd from './TerminalFrontEnd.js';
 import TerminalBackEnd from './TerminalBackEnd.js';
+import FontManager from './FontManager.js';
 
 export default class MainScene extends THREE.Scene {
-    properties;
+    terminalProperties;
+    portfolioProperties;
     frontend;
     backend;
+
+    fontManager;
 
     currentCommand = "";
     portfolioContent;
@@ -16,12 +21,25 @@ export default class MainScene extends THREE.Scene {
 
     constructor() {
         super()
-        this.properties = new TerminalProperties();
-        this.frontend = new TerminalFrontEnd(this, this.properties);
-        this.backend = new TerminalBackEnd(this.properties);
+        this.terminalProperties = new TerminalProperties();
+        this.portfolioProperties = new PortfolioProperties();
 
-        this.portfolioContent = new PortfolioContent(this);
-        this.properties.currentDirectory = `MainDrive`;
+        this.fontManager = new FontManager(this.terminalProperties, this.portfolioProperties);
+        this.frontend = new TerminalFrontEnd(this, this.terminalProperties);
+        this.backend = new TerminalBackEnd(this.terminalProperties);
+
+        this.portfolioContent = new PortfolioContent(this, this.portfolioProperties);
+        (async () => {
+            try {
+                await this.fontManager.loadFonts();
+                this.frontend.createTerminal();
+                this.portfolioContent.createWindow();
+            } catch (error) {
+                throw (error);
+            }
+        })();
+
+        this.terminalProperties.currentDirectory = `MainDrive`;
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 1);
         dirLight.position.set(0, 0, 15);
@@ -53,12 +71,12 @@ export default class MainScene extends THREE.Scene {
 
         if (key == "Enter") {
             let trimmedString = this.frontend.inputFieldContent.trim();
-            if (trimmedString == this.properties.currentDirectory)
+            if (trimmedString == this.terminalProperties.currentDirectory)
                 return;
             this.submitContent();
         }
 
-        if (this.properties.specialKeys.includes(key))
+        if (this.terminalProperties.specialKeys.includes(key))
             return;
 
         this.frontend.inputFieldContent += key;
@@ -101,9 +119,9 @@ export default class MainScene extends THREE.Scene {
         this.currentCommand = command.toLowerCase();
 
         //If array does not contain command, it is invalid. Throw error message to terminal.
-        if (!this.properties.validCommandsMap.has(this.currentCommand)) {
-            this.frontend.addToTerminalContent("'" + this.currentCommand + "'" + this.properties.errorMessageInvalidCommand);
-            this.frontend.addToTerminalContent(this.properties.helpMessage);
+        if (!this.terminalProperties.validCommandsMap.has(this.currentCommand)) {
+            this.frontend.addToTerminalContent("'" + this.currentCommand + "'" + this.terminalProperties.errorMessageInvalidCommand);
+            this.frontend.addToTerminalContent(this.terminalProperties.helpMessage);
             return false;
         }
 
@@ -111,10 +129,11 @@ export default class MainScene extends THREE.Scene {
     }
 
     moveIntoDirectory(newDir) {
-        this.properties.currentDirectory = newDir;
+        this.terminalProperties.currentDirectory = newDir;
     }
 
     executeCommand() {
+        const path = this.pathUsedAsTarget.substring(2).trim();
         switch (this.currentCommand) {
             case "help":
                 this.frontend.executeHelpCommand();
@@ -124,7 +143,7 @@ export default class MainScene extends THREE.Scene {
                 (async () => {
                     try {
                         //TODO: implement dir for subdirectories
-                        const data = await this.backend.recursivelySearchDirectories(this.properties.currentDirectory);
+                        const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
                         this.frontend.executeDirCommand(data);
                     } catch (error) {
                         throw (error);
@@ -132,7 +151,6 @@ export default class MainScene extends THREE.Scene {
                 })();
                 break;
             case "cd":
-                const path = this.pathUsedAsTarget.substring(2).trim();
                 if (path !== "../") {
                     this.cdDown(path);
                 }
@@ -147,7 +165,18 @@ export default class MainScene extends THREE.Scene {
                 }
                 let terminalInfo = "Retrieving contents of file '" + fileName + "'...";
                 this.frontend.addToTerminalContent(terminalInfo);
-                this.backend.readFile(this.pathUsedAsTarget);
+                const filePath = this.terminalProperties.currentDirectory + "/" + fileName;
+
+                (async () => {
+                    try {
+                        const fileData = await this.backend.readFile(filePath);
+                        this.portfolioContent.createText(fileData);
+                    }
+                    catch (error) {
+                        console.error("Error reading file:", error);
+                    }
+                })();
+
                 break;
             case "clear":
                 this.frontend.clearTerminal();
@@ -165,7 +194,7 @@ export default class MainScene extends THREE.Scene {
     }
 
     cdUp() {
-        if (this.properties.currentDirectory == this.properties.rootDirectory) {
+        if (this.terminalProperties.currentDirectory == this.terminalProperties.rootDirectory) {
             console.log("already at root.")
             return;
         }
@@ -179,7 +208,7 @@ export default class MainScene extends THREE.Scene {
     async cdDown(path) {
         try {
             //Moving down into directory.
-            const pathToCheck = this.properties.currentDirectory + "/" + path;
+            const pathToCheck = this.terminalProperties.currentDirectory + "/" + path;
             const data = await this.backend.checkDirectory(pathToCheck);
             console.log(data);
             if (data.Valid === false) {

@@ -6,49 +6,62 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 export default class PortfolioContent extends TemplatePage {
     portfolioWindow;
     scene;
-    fontLoader;
-    loadedFont;
+    properties;
+    portfolioContentGroup;
+    previousText = "";
+    previousTextObject;
 
-    constructor(scene) {
+    constructor(scene, properties) {
         super();
         this.scene = scene;
-        this.fontLoader = new FontLoader();
-
-        (async () => {
-            try {
-                await this.loadFont();
-                this.createText("Portfolio content")
-            } catch (error) {
-                throw (error);
-            }
-        })();
+        this.properties = properties;
 
         this.portfolioWindow = new THREE.Group();
-        this.createPortfolioWindow();
+        this.portfolioContentGroup = new THREE.Group();
     }
 
-    createPortfolioWindow() {
+    createWindow() {
+        this.createBackground();
+        this.createText("Portfolio content", this.properties.defaultFont, 0.3);
+    }
+
+    createBackground() {
         const geometry = new THREE.BoxGeometry(10, 10, 1);
         const material = new THREE.MeshPhongMaterial({ color: 0x262626 });
         const portfolioBackground = new THREE.Mesh(geometry, material);
         this.portfolioWindow.add(portfolioBackground);
         this.portfolioWindow.position.set(4, 0, 0);
-        //this.portfolioWindow.setRotationFromAxisAngle(new THREE.Vector3(1,0,0), 0)
         this.scene.add(this.portfolioWindow);
+        this.portfolioWindow.add(this.portfolioContentGroup);
+        this.portfolioContentGroup.position.set(-4.7, 3.4, 1);
     }
 
-    createText(textGiven){
-        let newLine;
+    createText(newText, fontGiven = this.properties.defaultFont, customFontSize = 0.12) {
+        let newTextObject;
 
-        const textGeometry = new TextGeometry(textGiven, {
-            font: this.loadedFont,
-            size: 0.25,
+        const textGeometry = new TextGeometry(newText, {
+            font: fontGiven,
+            size: customFontSize,
             height: 0.01,
             color: 0xff0000
         });
-        newLine = new THREE.Mesh(textGeometry);
-        this.portfolioWindow.add(newLine);
-        newLine.position.set(-4.7,3.4,1);
+        newTextObject = new THREE.Mesh(textGeometry);
+        this.portfolioContentGroup.add(newTextObject);
+        // Using split to count occurrences of "\n"
+
+        if (this.previousTextObject != undefined) {
+            const lastLineCount = (this.previousText.match(/\n/g) || []).length + 1;
+            const lineHeight = 0.5;
+            const cumulativeHeight = lineHeight * lastLineCount;
+
+            let previousPos = this.previousTextObject.position;
+            console.log(previousPos);
+            newTextObject.position.set(previousPos.x, previousPos.y - cumulativeHeight, previousPos.z);
+        }
+
+        this.previousText = newText;
+        this.previousTextObject = newTextObject;
+        console.log(this.previousTextObject.position);
     }
 
     async loadFont() {

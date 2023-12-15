@@ -40,7 +40,7 @@ export default class TerminalBackEnd {
             const url = `https://nilsmeijer.com/Terminal/GetFile.php?data=${encodeURIComponent(formattedPath)}`;
             const response = await fetch(url);
             const fileContent = await response.text();
-            console.log(fileContent);
+            return fileContent;
         } catch (error) {
             throw error;
         }

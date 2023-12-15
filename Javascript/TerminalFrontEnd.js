@@ -1,12 +1,8 @@
 import * as THREE from 'three';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
 export default class TerminalFrontEnd {
     scene;
-    fontLoader;
-    defaultFont;
-    asciiFont;
 
     inputFieldGroup;
     terminalContentGroup;
@@ -23,7 +19,6 @@ export default class TerminalFrontEnd {
     constructor(scene, properties) {
         this.scene = scene;
         this.properties = properties;
-        this.fontLoader = new FontLoader();
         this.startingUp = true;
 
         this.inputFieldGroup = new THREE.Group();
@@ -36,51 +31,24 @@ export default class TerminalFrontEnd {
         this.scene.add(this.terminalContentGroup);
 
         this.createCaretTick();
-
-        (async () => {
-            try {
-                await this.loadFont();
-                this.createTerminal();
-            } catch (error) {
-                throw (error);
-            }
-        })();
-    }
-
-    async loadFont() {
-        try {
-            this.defaultFont = await new Promise((resolve, reject) => {
-                this.fontLoader.load('../../static/fonts/hack.json', (font) => {
-                    resolve(font);
-                }, undefined, reject);
-            });
-
-            this.asciiFont = this.defaultFont = await new Promise((resolve, reject) => {
-                this.fontLoader.load('../../static/fonts/Courier.json', (font) => {
-                    resolve(font);
-                }, undefined, reject);
-            });
-        } catch (error) {
-            throw error;
-        }
     }
 
     createTerminal() {
         this.inputFieldContent = this.properties.defaultTerminalLine;
 
         const lines = this.properties.asciiArt.split('\n');
-
+        
         let delay = 0;
         // Print each line separately
         lines.forEach(line => {
-            setTimeout(() => this.graduallyCreateStartingContent(line, this.asciiFont, 0), delay);
+            setTimeout(() => this.graduallyCreateStartingContent(line, this.properties.asciiFont, 0), delay);
             delay += 100;
         });
 
-        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[0], this.defaultFont), 1000);
-        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[1], this.defaultFont), 1500);
+        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[0], this.properties.defaultFont), 1000);
+        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[1], this.properties.defaultFont), 1500);
         setTimeout(() => {
-            this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.defaultFont);
+            this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.properties.defaultFont);
             this.startingUp = false;
         }, 2000);
 
@@ -146,7 +114,7 @@ export default class TerminalFrontEnd {
 
     }
 
-    addToTerminalContent(textGiven, fontGiven = this.defaultFont, customFontSize = 0.12, customXPos = 0) {
+    addToTerminalContent(textGiven, fontGiven = this.properties.defaultFont, customFontSize = 0.12, customXPos = 0) {
         let newLine;
 
         if (textGiven == undefined) {
@@ -185,7 +153,7 @@ export default class TerminalFrontEnd {
             this.inputFieldGroup.remove(this.inputFieldTextObject);
 
         const textGeometry = new TextGeometry(this.inputFieldContent, {
-            font: this.defaultFont,
+            font: this.properties.defaultFont,
             size: 0.2,
             height: 0.01,
         });

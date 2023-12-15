@@ -20,6 +20,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true,
 });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(sizes.x, sizes.y);
 document.body.appendChild(renderer.domElement);
 const stats = new Stats()
@@ -34,8 +35,8 @@ function onResize() {
     camera.aspect = sizes.width / sizes.height;
     camera.updateProjectionMatrix();
 
-    renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(sizes.width, sizes.height);
 }
 
 function animate() {

@@ -1,4 +1,7 @@
 export default class TerminalProperties {
+    defaultFont;
+    asciiFont;
+    
     asciiArt = `
  _   _ _ _      ___  ___     _ _           
 | \\ | (_) |     |  \\/  |    (_|_)          
@@ -20,7 +23,7 @@ export default class TerminalProperties {
     validCommandsMap = new Map([
         ["help", "Lists all commands available."],
         ["dir", "Lists all subdirectories of this directory."],
-        ["cd", "Move into specified directory.\nExample: 'cd Portfolio' will move current directory to Portfolio.\n'./' will move current directory one level up."],
+        ["cd", "Move into specified directory.\nExample: 'cd Portfolio' will move current directory to Portfolio.\n'../' will move current directory one level up."],
         ["type", "Show content of specified file.\nExample: 'type AI_Theatre' will display the contents of that file."],
         ["clear", "Clear the terminal screen"]
     ]);
