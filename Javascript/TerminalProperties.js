@@ -27,8 +27,11 @@ export default class TerminalProperties {
         ["type", "Show content of specified file.\nExample: 'type AI_Theatre' will display the contents of that file."],
         ["clear", "Clear the terminal screen"]
     ]);
+    messageOnCommandDir = "Finding directories..."
+    messageOnCommandType = ["Opening file", "and reading contents..." ]
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";
     errorMessageInvalidDirectory = "The system cannot find the path specified.";
+    errorMessageInvalidFile = "File does not exist at path specified."
     helpMessage = "Use 'help' to show valid commands.";
 
     //

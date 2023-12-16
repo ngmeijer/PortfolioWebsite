@@ -20,7 +20,7 @@ try {
             echo $fileContents;
         }
     } else {
-        echo "Invalid path of file: " . $finalPath;
+        echo "Invalid";
     }
 } catch (Exception $e) {
     // Handle other exceptions

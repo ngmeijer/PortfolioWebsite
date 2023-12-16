@@ -55,30 +55,51 @@ export default class MainScene extends THREE.Scene {
         }
 
         this.userIsTyping = true;
+
+        //Get input
         const key = event.key;
+
+        //Check if should delete character
+        if (this.checkCharacterDelete(event, key) === true)
+            return;
+
+        //Check if content should and can be submitted.
+        if (key === "Enter") {
+            this.frontend.addToTerminalContent(this.frontend.inputFieldContent);
+
+            let isValid = this.checkIfCommandIsValid();
+
+            if (isValid)
+                this.executeCommand();
+
+            this.frontend.resetInputLine();
+        }
+
+        //Prevent adding to input field if key is one of special keys.
+        if (this.terminalProperties.specialKeys.includes(key))
+            return;
+
+        this.addToInputField(key);
+    }
+
+    checkCharacterDelete(event, key) {
         if (key == "Backspace") {
             event.preventDefault();
             if (this.frontend.inputFieldContent.endsWith(">")) {
                 console.log("Current character is >")
-                return;
+                return true;
             }
 
             const newContent = this.frontend.inputFieldContent.slice(0, -1);
             this.frontend.inputFieldContent = newContent;
             this.frontend.updateInputField();
-            return;
+            return true;
         }
 
-        if (key == "Enter") {
-            let trimmedString = this.frontend.inputFieldContent.trim();
-            if (trimmedString == this.terminalProperties.currentDirectory)
-                return;
-            this.submitContent();
-        }
+        return false;
+    }
 
-        if (this.terminalProperties.specialKeys.includes(key))
-            return;
-
+    addToInputField(key) {
         this.frontend.inputFieldContent += key;
         this.frontend.updateInputField();
     }
@@ -93,20 +114,9 @@ export default class MainScene extends THREE.Scene {
         }
     }
 
-    submitContent() {
-        this.frontend.addToTerminalContent(this.frontend.inputFieldContent);
-        let isValid = this.checkIfCommandIsValid();
-        this.frontend.resetInputLine();
-        if (!isValid)
-            return;
-
-        let shouldProceed = this.executeCommand();
-    }
-
     checkIfCommandIsValid() {
         //Find the last >.
         let bracketIndex = this.frontend.inputFieldContent.indexOf(">");
-        let resultString = "";
         if (bracketIndex == -1) {
             return false;
         }
@@ -157,31 +167,35 @@ export default class MainScene extends THREE.Scene {
                 else this.cdUp();
                 break;
             case "type":
-                let fileName = this.extractDataFromInput("path");
-                if (fileName === undefined) {
-                    let errorMessage = "File does not exist."
-                    this.frontend.addToTerminalContent(errorMessage);
-                    return;
-                }
-                let terminalInfo = "Retrieving contents of file '" + fileName + "'...";
-                this.frontend.addToTerminalContent(terminalInfo);
-                const filePath = this.terminalProperties.currentDirectory + "/" + fileName;
-
-                (async () => {
-                    try {
-                        const fileData = await this.backend.readFile(filePath);
-                        this.portfolioContent.createText(fileData);
-                    }
-                    catch (error) {
-                        console.error("Error reading file:", error);
-                    }
-                })();
-
+                this.findAndReadFile();
                 break;
             case "clear":
                 this.frontend.clearTerminal();
                 break;
         }
+    }
+
+    async findAndReadFile() {
+        let fileName = this.extractDataFromInput("path");
+        (async () => {
+            try {
+                const filePath = this.terminalProperties.currentDirectory + "/" + fileName;
+                const fileData = await this.backend.readFile(filePath);
+
+                if (fileData === "Invalid") {
+                    this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
+                    return;
+                }
+
+                //Succeeded reading the file and displaying contents
+                let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
+                this.frontend.addToTerminalContent(successionMessage);
+                this.portfolioContent.createText(fileData);
+            }
+            catch (error) {
+                this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
+            }
+        })();
     }
 
     extractDataFromInput(dataToExtract) {
