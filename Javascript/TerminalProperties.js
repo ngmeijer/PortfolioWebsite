@@ -13,7 +13,7 @@ export default class TerminalProperties {
                             |__/           `;
 
 
-    customDefaultText = ["Portfolio of Nils Meijer [Version 10.12.2023]",
+    customDefaultText = ["Portfolio of Nils Meijer [Version 16.12.2023]",
         "(c) Meijer Inc. All rights reserved. Work in progress."]
 
     specialKeys = ["Shift", "CapsLock", "Enter", "Control", "ContextMenu", "Tab", "Alt",
