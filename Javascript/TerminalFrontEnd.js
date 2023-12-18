@@ -16,6 +16,8 @@ export default class TerminalFrontEnd {
     startingUp;
     previousLine = "";
 
+    autocompleteActive;
+
     constructor(scene, properties) {
         this.scene = scene;
         this.properties = properties;
@@ -47,10 +49,12 @@ export default class TerminalFrontEnd {
 
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[0], this.properties.defaultFont), 1000);
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[1], this.properties.defaultFont), 1500);
+        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[2], this.properties.defaultFont), 1700);
+        setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[3], this.properties.defaultFont), 2200);
         setTimeout(() => {
             this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.properties.defaultFont);
             this.startingUp = false;
-        }, 2000);
+        }, 2500);
 
         setInterval(() => {
             this.loopCursorTick();

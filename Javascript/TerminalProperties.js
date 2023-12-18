@@ -14,7 +14,9 @@ export default class TerminalProperties {
 
 
     customDefaultText = ["Portfolio of Nils Meijer [Version 16.12.2023]",
-        "(c) Meijer Inc. All rights reserved. Work in progress."]
+        "(c) Meijer Inc. All rights reserved. Work in progress.",
+    "Waiting for system assets to initialize...",
+    "System ready."]
 
     specialKeys = ["Shift", "CapsLock", "Enter", "Control", "ContextMenu", "Tab", "Alt",
         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
