@@ -3,11 +3,11 @@ import TemplatePage from './TemplatePage.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
-export default class PortfolioContent extends TemplatePage {
-    portfolioWindow;
+export default class WebsiteContent extends TemplatePage {
+    contentWindow;
     scene;
     properties;
-    portfolioContentGroup;
+    websiteContentGroup;
     previousText = "";
     previousTextObject;
 
@@ -16,8 +16,8 @@ export default class PortfolioContent extends TemplatePage {
         this.scene = scene;
         this.properties = properties;
 
-        this.portfolioWindow = new THREE.Group();
-        this.portfolioContentGroup = new THREE.Group();
+        this.contentWindow = new THREE.Group();
+        this.websiteContentGroup = new THREE.Group();
     }
 
     createWindow() {
@@ -29,11 +29,15 @@ export default class PortfolioContent extends TemplatePage {
         const geometry = new THREE.BoxGeometry(10, 10, 1);
         const material = new THREE.MeshPhongMaterial({ color: 0x262626 });
         const portfolioBackground = new THREE.Mesh(geometry, material);
-        this.portfolioWindow.add(portfolioBackground);
-        this.portfolioWindow.position.set(4, 0, 0);
-        this.scene.add(this.portfolioWindow);
-        this.portfolioWindow.add(this.portfolioContentGroup);
-        this.portfolioContentGroup.position.set(-4.7, 3.4, 1);
+        this.contentWindow.add(portfolioBackground);
+        this.contentWindow.position.set(4, 0, 0);
+        this.scene.add(this.contentWindow);
+        this.contentWindow.add(this.websiteContentGroup);
+        this.websiteContentGroup.position.set(-4.7, 3.4, 1);
+    }
+
+    setTitle(){
+
     }
 
     createText(newText, fontGiven = this.properties.defaultFont, customFontSize = 0.12) {
@@ -46,7 +50,7 @@ export default class PortfolioContent extends TemplatePage {
             color: 0xff0000
         });
         newTextObject = new THREE.Mesh(textGeometry);
-        this.portfolioContentGroup.add(newTextObject);
+        this.websiteContentGroup.add(newTextObject);
         // Using split to count occurrences of "\n"
 
         if (this.previousTextObject != undefined) {

@@ -39,7 +39,7 @@ export default class TerminalFrontEnd {
         this.inputFieldContent = this.properties.defaultTerminalLine;
 
         const lines = this.properties.asciiArt.split('\n');
-        
+
         let delay = 0;
         // Print each line separately
         lines.forEach(line => {
@@ -69,7 +69,7 @@ export default class TerminalFrontEnd {
 
     createCaretTick() {
         const cursorGeometry = new THREE.BoxGeometry(0.2, 0.02, 0.01);
-        const cursorMaterial = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: new THREE.Color(0xffffff), emissiveIntensity: 1000 });
+        const cursorMaterial = new THREE.MeshStandardMaterial({ color: 0x20C20E });
         this.caretTick = new THREE.Mesh(cursorGeometry, cursorMaterial);
         this.inputFieldGroup.add(this.caretTick);
     }
@@ -130,10 +130,12 @@ export default class TerminalFrontEnd {
         const textGeometry = new TextGeometry(textWithTabs, {
             font: fontGiven,
             size: customFontSize,
-            height: 0.01,
+            height: 0.1,
         });
-        newLine = new THREE.Mesh(textGeometry);
+        const textMaterial = new THREE.MeshPhongMaterial({ color: 0x20C20E });
+        newLine = new THREE.Mesh(textGeometry, textMaterial);
         newLine.position.x = customXPos;
+        newLine.receiveShadow = false;
 
         // Using split to count occurrences of "\n"
         if (this.previousLine != undefined) {
@@ -161,7 +163,8 @@ export default class TerminalFrontEnd {
             size: 0.2,
             height: 0.01,
         });
-        this.inputFieldTextObject = new THREE.Mesh(textGeometry);
+        const textMaterial = new THREE.MeshStandardMaterial({ color: 0x20C20E });
+        this.inputFieldTextObject = new THREE.Mesh(textGeometry, textMaterial);
         this.inputFieldGroup.add(this.inputFieldTextObject);
         this.inputFieldTextObject.updateMatrixWorld();
 
@@ -205,7 +208,10 @@ export default class TerminalFrontEnd {
         this.addToTerminalContent("Found " + fileArray.length + " file(s) in " + this.properties.currentDirectory);
         for (let i = 0; i < fileArray.length; i++) {
             let fileName = fileArray[i];
-            this.addToTerminalContent(" - " + fileName);
+            let lastIndex = fileName.lastIndexOf("/");
+            let result = fileName.substring(lastIndex + 1);
+            const formattedName = result.replace(/\//g, "\\");
+            this.addToTerminalContent(" - " + formattedName);
         }
     }
 

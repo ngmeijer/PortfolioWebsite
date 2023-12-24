@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import PortfolioContent from './PortfolioContent.js';
+import WebsiteContent from './WebsiteContent.js';
 import TerminalProperties from './TerminalProperties.js';
 import PortfolioProperties from './PortfolioProperties.js';
 import TerminalFrontEnd from './TerminalFrontEnd.js';
@@ -28,7 +28,7 @@ export default class MainScene extends THREE.Scene {
         this.frontend = new TerminalFrontEnd(this, this.terminalProperties);
         this.backend = new TerminalBackEnd(this.terminalProperties);
 
-        this.portfolioContent = new PortfolioContent(this, this.portfolioProperties);
+        this.portfolioContent = new WebsiteContent(this, this.portfolioProperties);
         (async () => {
             try {
                 await this.fontManager.loadFonts();
@@ -179,18 +179,21 @@ export default class MainScene extends THREE.Scene {
         let fileName = this.extractDataFromInput("path");
         (async () => {
             try {
-                const filePath = this.terminalProperties.currentDirectory + "/" + fileName;
+                const filePath = this.terminalProperties.currentDirectory + "\\" + fileName;
+                console.log(filePath);
                 const fileData = await this.backend.readFile(filePath);
-
-                if (fileData === "Invalid") {
-                    this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
+                console.log(fileData);
+                
+                if (fileData.FileData === "Invalid") {
+                    //this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
                     return;
                 }
 
                 //Succeeded reading the file and displaying contents
                 let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
                 this.frontend.addToTerminalContent(successionMessage);
-                this.portfolioContent.createText(fileData);
+                this.portfolioContent.setTitle(fileData.FileName);
+                this.portfolioContent.createText(fileData.FileData);
             }
             catch (error) {
                 this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
