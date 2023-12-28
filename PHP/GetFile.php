@@ -7,31 +7,46 @@ if (in_array($origin, $allowedOrigins)) {
     header('Access-Control-Allow-Credentials: true');
 }
 
-// Get the directory path from the query parameter
+// Get the file path from the query parameter
 $dataFromJavascript = isset($_GET['data']) ? $_GET['data'] : '';
-$finalPath = $dataFromJavascript;
-$result;
+$filePath = $dataFromJavascript;
 
-try {
-    // Use glob for case-insensitive filename matching
-    $matchingFiles = glob($finalPath, GLOB_BRACE | GLOB_NOCHECK | GLOB_NOESCAPE);
-    $notEmpty = !empty($matchingFiles);
-    $isFile = is_file($matchingFiles[0]);
+// Normalize the path to handle different slashes and case variations
+$normalizedPath = rtrim($filePath, DIRECTORY_SEPARATOR);
+#$normalizedPath = str_replace(DIRECTORY_SEPARATOR, '/', $normalizedPath);
 
-    if (!empty($matchingFiles) && is_file($matchingFiles[0])) {
-        $fileContents = file_get_contents($matchingFiles[0]);
-        if ($fileContents === false) {
-            $result = ['FileData' => 'Could not retrieve data.'];
-        } else {
-            $result = ['FileData' => $fileContents, 'FilePath' => $matchingFiles[0]];
-        }
-        echo json_encode($result);
+// Separate the parent directory and target file
+$parentDirectory = dirname($normalizedPath);
+$targetFile = basename($normalizedPath);
+
+$contents = scandir($parentDirectory);
+
+// Perform case-insensitive comparison
+$fileExists = false;
+$actualFileName = null;
+foreach ($contents as $item) {
+    if (strcasecmp($item, $targetFile) === 0 && is_file($parentDirectory . DIRECTORY_SEPARATOR . $item)) {
+        $fileExists = true;
+        $actualFileName = $item; // Capture the actual file name
+        break;
+    }
+}
+
+$result = [];
+
+if ($fileExists) {
+    // Read the contents of the file
+    $fileContent = file_get_contents($parentDirectory . DIRECTORY_SEPARATOR . $actualFileName);
+
+    if ($fileContent === false) {
+        echo 'Failed to read file content.';
     } else {
-        $result = ['FileData' => 'Invalid.', 'FilePath' => $finalPath, 'Is file?' => $isFile, 'Matching files:' => $matchingFiles];
+        // Process or display the file content
+        $result = ['FileName' => $actualFileName, 'FileContent' => $fileContent];
         echo json_encode($result);
     }
-} catch (Exception $e) {
-    // Handle other exceptions
-    echo 'Exception: ' . $e->getMessage();
+} else {
+    $result = ['FileContent' => 'Error while reading file:' . $fileContent];
+    echo json_encode($result);
 }
 ?>

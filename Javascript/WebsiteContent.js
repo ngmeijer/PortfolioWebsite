@@ -7,6 +7,7 @@ export default class WebsiteContent extends TemplatePage {
     contentWindow;
     scene;
     properties;
+    header;
     websiteContentGroup;
     previousText = "";
     previousTextObject;
@@ -22,7 +23,7 @@ export default class WebsiteContent extends TemplatePage {
 
     createWindow() {
         this.createBackground();
-        this.createText("Portfolio content", this.properties.defaultFont, 0.3);
+        this.header = this.createText("Portfolio content", this.properties.defaultFont, 0.3);
     }
 
     createBackground() {
@@ -36,8 +37,14 @@ export default class WebsiteContent extends TemplatePage {
         this.websiteContentGroup.position.set(-4.7, 3.4, 1);
     }
 
-    setTitle(){
+    resetWindow(){
+        this.previousTextObject = null;
+        this.websiteContentGroup.children = [];
+    }
 
+    setTitle(newTitle){
+        this.header = this.createText(newTitle, this.properties.defaultFont, 0.3);
+        this.websiteContentGroup.add(this.header);
     }
 
     createText(newText, fontGiven = this.properties.defaultFont, customFontSize = 0.12) {
@@ -59,13 +66,13 @@ export default class WebsiteContent extends TemplatePage {
             const cumulativeHeight = lineHeight * lastLineCount;
 
             let previousPos = this.previousTextObject.position;
-            console.log(previousPos);
             newTextObject.position.set(previousPos.x, previousPos.y - cumulativeHeight, previousPos.z);
         }
 
         this.previousText = newText;
         this.previousTextObject = newTextObject;
-        console.log(this.previousTextObject.position);
+
+        return newTextObject;
     }
 
     async loadFont() {

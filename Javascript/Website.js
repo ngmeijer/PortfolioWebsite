@@ -192,8 +192,10 @@ export default class MainScene extends THREE.Scene {
                 //Succeeded reading the file and displaying contents
                 let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
                 this.frontend.addToTerminalContent(successionMessage);
+                
+                this.portfolioContent.resetWindow();
                 this.portfolioContent.setTitle(fileData.FileName);
-                this.portfolioContent.createText(fileData.FileData);
+                this.portfolioContent.createText(fileData.FileContent);
             }
             catch (error) {
                 this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
