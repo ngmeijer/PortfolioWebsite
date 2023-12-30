@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import TemplatePage from './TemplatePage.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 export default class WebsiteContent extends TemplatePage {
     contentWindow;
@@ -12,6 +13,14 @@ export default class WebsiteContent extends TemplatePage {
     previousText = "";
     previousTextObject;
 
+    textRenderer;
+
+    itemDescription;
+    descriptionContainer;
+
+    itemTitle;
+    titleContainer;
+
     constructor(scene, properties) {
         super();
         this.scene = scene;
@@ -19,11 +28,49 @@ export default class WebsiteContent extends TemplatePage {
 
         this.contentWindow = new THREE.Group();
         this.websiteContentGroup = new THREE.Group();
+
+        this.createTextRenderer();
+
+        const titlePosition = new THREE.Vector2(3.3, 0);
+        this.createItemTitleText(50, titlePosition);
+
+        const descriptionPosition = new THREE.Vector2(3.3, 0);
+        this.createItemDescriptionText(20, descriptionPosition);
+    }
+
+    createTextRenderer(){
+        this.textRenderer = new CSS2DRenderer();
+        this.textRenderer.setSize(this.properties.size.x, this.properties.size.y);
+        this.textRenderer.domElement.style.position = 'absolute';
+        this.textRenderer.domElement.style.top = '0px';
+        document.body.appendChild(this.textRenderer.domElement);
+    }
+
+    createItemTitleText(customFontSize = 50, position) {
+        this.itemTitle = document.createElement('p');
+        this.itemTitle.style.color = 'white';
+        this.itemTitle.style.fontSize = `${customFontSize}` + 'px';
+        this.itemTitle.style.width = '40vw';
+        
+        this.titleContainer = new CSS2DObject(this.itemTitle);
+        this.websiteContentGroup.add(this.titleContainer);
+        this.titleContainer.position.set(position.x, position.y, 0);
+    }
+
+    createItemDescriptionText(customFontSize = 20, position) {
+        this.itemDescription = document.createElement('p');
+        this.itemDescription.style.color = 'white';
+        this.itemDescription.style.fontSize = `${customFontSize}` + 'px';
+        this.itemDescription.style.width = '40vw';
+
+        this.descriptionContainer = new CSS2DObject(this.itemDescription);
+        this.websiteContentGroup.add(this.descriptionContainer);
+        this.descriptionContainer.position.set(position.x, position.y, 0);
     }
 
     createWindow() {
         this.createBackground();
-        this.header = this.createText("Portfolio content", this.properties.defaultFont, 0.3);
+        this.setItemTitle("Portfolio content", new THREE.Vector2(3.3, 0));
     }
 
     createBackground() {
@@ -37,42 +84,17 @@ export default class WebsiteContent extends TemplatePage {
         this.websiteContentGroup.position.set(-4.7, 3.4, 1);
     }
 
-    resetWindow(){
-        this.previousTextObject = null;
-        this.websiteContentGroup.children = [];
+    setItemTitle(newText, position) {
+        this.itemTitle.textContent = newText;
+        this.titleContainer.position.x = position.x;
+        this.titleContainer.position.y = position.y;
     }
 
-    setTitle(newTitle){
-        this.header = this.createText(newTitle, this.properties.defaultFont, 0.3);
-        this.websiteContentGroup.add(this.header);
-    }
-
-    createText(newText, fontGiven = this.properties.defaultFont, customFontSize = 0.12) {
-        let newTextObject;
-
-        const textGeometry = new TextGeometry(newText, {
-            font: fontGiven,
-            size: customFontSize,
-            height: 0.01,
-            color: 0xff0000
-        });
-        newTextObject = new THREE.Mesh(textGeometry);
-        this.websiteContentGroup.add(newTextObject);
-        // Using split to count occurrences of "\n"
-
-        if (this.previousTextObject != undefined) {
-            const lastLineCount = (this.previousText.match(/\n/g) || []).length + 1;
-            const lineHeight = 0.5;
-            const cumulativeHeight = lineHeight * lastLineCount;
-
-            let previousPos = this.previousTextObject.position;
-            newTextObject.position.set(previousPos.x, previousPos.y - cumulativeHeight, previousPos.z);
-        }
-
-        this.previousText = newText;
-        this.previousTextObject = newTextObject;
-
-        return newTextObject;
+    setItemDescriptionText(newText, position) {
+        console.log(this.itemDescription.style);
+        this.itemDescription.textContent = newText;
+        this.descriptionContainer.position.x = position.x;
+        this.descriptionContainer.position.y = position.y;
     }
 
     async loadFont() {

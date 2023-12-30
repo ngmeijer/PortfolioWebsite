@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import Stats from 'stats.js';
-import TestScene from './Website.js';
+import MainScene from './Website.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-const scene = new TestScene();
 const sizes = {
     x: window.innerWidth,
     y: window.innerHeight,
 };
+const camera = new THREE.PerspectiveCamera(75, sizes.x / sizes.y, 0.1, 1000);
+const scene = new MainScene(sizes, camera);
 
 const aspectRatio = sizes.x / sizes.y
-const camera = new THREE.PerspectiveCamera(75, sizes.x / sizes.y, 0.1, 1000);
 camera.position.z = 6;
 const canvas = document.querySelector('canvas.webgl')
 document.addEventListener('keydown', scene.onDocumentKeyPress);
@@ -32,6 +32,8 @@ function onResize() {
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
 
+    scene.updateScene();
+
     camera.aspect = sizes.width / sizes.height;
     camera.updateProjectionMatrix();
 
@@ -43,6 +45,7 @@ function animate() {
     stats.begin();
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+    scene.portfolioContent.textRenderer.render(scene, camera);
     stats.end();
 }
 animate();

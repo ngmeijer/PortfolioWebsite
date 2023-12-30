@@ -19,10 +19,12 @@ export default class MainScene extends THREE.Scene {
     backgroundPlane
     userIsTyping;
 
-    constructor() {
+    constructor(size, camera) {
         super()
         this.terminalProperties = new TerminalProperties();
         this.portfolioProperties = new PortfolioProperties();
+        this.portfolioProperties.size = size;
+        this.portfolioProperties.camera = camera;
 
         this.fontManager = new FontManager(this.terminalProperties, this.portfolioProperties);
         this.frontend = new TerminalFrontEnd(this, this.terminalProperties);
@@ -47,6 +49,10 @@ export default class MainScene extends THREE.Scene {
         this.add(dirLight);
 
         this.onDocumentKeyPress = this.onDocumentKeyPress.bind(this);
+    }
+
+    updateScene() {
+        this.portfolioContent.textRenderer.setSize(this.portfolioProperties.size.x, this.portfolioProperties.size.y);
     }
 
     onDocumentKeyPress(event) {
@@ -183,7 +189,7 @@ export default class MainScene extends THREE.Scene {
                 console.log(filePath);
                 const fileData = await this.backend.readFile(filePath);
                 console.log(fileData);
-                
+
                 if (fileData.FileData === "Invalid") {
                     //this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
                     return;
@@ -192,13 +198,11 @@ export default class MainScene extends THREE.Scene {
                 //Succeeded reading the file and displaying contents
                 let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
                 this.frontend.addToTerminalContent(successionMessage);
-                
-                this.portfolioContent.resetWindow();
-                this.portfolioContent.setTitle(fileData.FileName);
-                this.portfolioContent.createText(fileData.FileContent);
+
+                this.portfolioContent.setItemDescriptionText(fileData.FileContent, new THREE.Vector2(3.3, -1.2));
             }
             catch (error) {
-                this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
+                //error?
             }
         })();
     }
