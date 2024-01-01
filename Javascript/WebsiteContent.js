@@ -38,7 +38,7 @@ export default class WebsiteContent extends TemplatePage {
         this.createItemDescriptionText(20, descriptionPosition);
     }
 
-    createTextRenderer(){
+    createTextRenderer() {
         this.textRenderer = new CSS2DRenderer();
         this.textRenderer.setSize(this.properties.size.x, this.properties.size.y);
         this.textRenderer.domElement.style.position = 'absolute';
@@ -51,7 +51,7 @@ export default class WebsiteContent extends TemplatePage {
         this.itemTitle.style.color = 'white';
         this.itemTitle.style.fontSize = `${customFontSize}` + 'px';
         this.itemTitle.style.width = '40vw';
-        
+
         this.titleContainer = new CSS2DObject(this.itemTitle);
         this.websiteContentGroup.add(this.titleContainer);
         this.titleContainer.position.set(position.x, position.y, 0);
@@ -91,8 +91,9 @@ export default class WebsiteContent extends TemplatePage {
     }
 
     setItemDescriptionText(newText, position) {
-        console.log(this.itemDescription.style);
-        this.itemDescription.textContent = newText;
+        this.itemDescription.innerHTML = newText;
+        console.log(this.itemDescription.innerHTML);
+        //this.itemDescription.textContent = newText;
         this.descriptionContainer.position.x = position.x;
         this.descriptionContainer.position.y = position.y;
     }

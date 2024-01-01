@@ -13,7 +13,7 @@ export default class TerminalProperties {
                             |__/           `;
 
 
-    customDefaultText = ["Portfolio of Nils Meijer [Version 16.12.2023]",
+    customDefaultText = ["Portfolio of Nils Meijer [Version 01.01.2024]",
         "(c) Meijer Inc. All rights reserved. Work in progress.",
     "Waiting for system assets to initialize...",
     "System ready."]
@@ -26,7 +26,7 @@ export default class TerminalProperties {
         ["help", "Lists all commands available."],
         ["dir", "Lists all subdirectories of this directory."],
         ["cd", "Move into specified directory.\nExample: 'cd Portfolio' will move current directory to Portfolio.\n'../' will move current directory one level up."],
-        ["type", "Show content of specified file.\nExample: 'type AI_Theatre' will display the contents of that file."],
+        ["show", "Show content of specified file.\nExample: 'show aboutme.txt' will display the contents of that file."],
         ["clear", "Clear the terminal screen"]
     ]);
     messageOnCommandDir = "Finding directories..."

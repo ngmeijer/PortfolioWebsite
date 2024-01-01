@@ -172,7 +172,7 @@ export default class MainScene extends THREE.Scene {
                 }
                 else this.cdUp();
                 break;
-            case "type":
+            case "show":
                 this.findAndReadFile();
                 break;
             case "clear":
@@ -190,8 +190,8 @@ export default class MainScene extends THREE.Scene {
                 const fileData = await this.backend.readFile(filePath);
                 console.log(fileData);
 
-                if (fileData.FileData === "Invalid") {
-                    //this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
+                if (fileData.FileContent === "Invalid") {
+                    this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
                     return;
                 }
 
@@ -199,7 +199,7 @@ export default class MainScene extends THREE.Scene {
                 let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
                 this.frontend.addToTerminalContent(successionMessage);
 
-                this.portfolioContent.setItemDescriptionText(fileData.FileContent, new THREE.Vector2(3.3, -1.2));
+                this.portfolioContent.setItemDescriptionText(fileData.FileContent, new THREE.Vector2(3.3, -1.8));
             }
             catch (error) {
                 //error?
