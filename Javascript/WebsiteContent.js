@@ -15,11 +15,13 @@ export default class WebsiteContent extends TemplatePage {
 
     textRenderer;
 
-    itemDescription;
-    descriptionContainer;
-
+    itemDescriptionText;
     itemTitle;
+    itemGallery;
+
     titleContainer;
+    descriptionContainer;
+    galleryContainer;
 
     constructor(scene, properties) {
         super();
@@ -29,20 +31,24 @@ export default class WebsiteContent extends TemplatePage {
         this.contentWindow = new THREE.Group();
         this.websiteContentGroup = new THREE.Group();
 
-        this.createTextRenderer();
+        this.createContentRenderer();
 
         const titlePosition = new THREE.Vector2(3.3, 0);
         this.createItemTitleText(50, titlePosition);
 
         const descriptionPosition = new THREE.Vector2(3.3, 0);
         this.createItemDescriptionText(20, descriptionPosition);
+
+        const galleryPosition = new THREE.Vector2(3.3, 0);
+        this.createItemImageGallery(galleryPosition);
     }
 
-    createTextRenderer() {
+    createContentRenderer() {
         this.textRenderer = new CSS2DRenderer();
         this.textRenderer.setSize(this.properties.size.x, this.properties.size.y);
         this.textRenderer.domElement.style.position = 'absolute';
         this.textRenderer.domElement.style.top = '0px';
+        this.textRenderer.domElement.id = "ContentRenderer";
         document.body.appendChild(this.textRenderer.domElement);
     }
 
@@ -51,6 +57,7 @@ export default class WebsiteContent extends TemplatePage {
         this.itemTitle.style.color = 'white';
         this.itemTitle.style.fontSize = `${customFontSize}` + 'px';
         this.itemTitle.style.width = '40vw';
+        this.itemTitle.id = "ItemTitle";
 
         this.titleContainer = new CSS2DObject(this.itemTitle);
         this.websiteContentGroup.add(this.titleContainer);
@@ -58,14 +65,31 @@ export default class WebsiteContent extends TemplatePage {
     }
 
     createItemDescriptionText(customFontSize = 20, position) {
-        this.itemDescription = document.createElement('p');
-        this.itemDescription.style.color = 'white';
-        this.itemDescription.style.fontSize = `${customFontSize}` + 'px';
-        this.itemDescription.style.width = '40vw';
+        this.itemDescriptionText = document.createElement('p');
+        this.itemDescriptionText.style.color = 'white';
+        this.itemDescriptionText.style.fontSize = `${customFontSize}` + 'px';
+        this.itemDescriptionText.style.width = '40vw';
+        this.itemDescriptionText.id = "ItemDescription";
 
-        this.descriptionContainer = new CSS2DObject(this.itemDescription);
+        this.descriptionContainer = new CSS2DObject(this.itemDescriptionText);
         this.websiteContentGroup.add(this.descriptionContainer);
         this.descriptionContainer.position.set(position.x, position.y, 0);
+    }
+
+    createItemImageGallery(position) {
+        this.galleryContainer = new CSS2DObject(this.itemGallery);
+        this.websiteContentGroup.add(this.galleryContainer);
+        this.galleryContainer.position.set(position.x, position.y, 0);
+
+        this.itemGallery = document.createElement('div');
+        this.itemGallery.style.color = 'white';
+        this.itemGallery.style.fontSize = `${30}` + 'px';
+        this.itemGallery.style.width = '30vw';
+        this.itemGallery.id = "gallery";
+
+        this.galleryContainer = new CSS2DObject(this.itemGallery);
+        this.websiteContentGroup.add(this.galleryContainer);
+        this.galleryContainer.position.set(position.x, position.y, 0);
     }
 
     createWindow() {
@@ -91,11 +115,25 @@ export default class WebsiteContent extends TemplatePage {
     }
 
     setItemDescriptionText(newText, position) {
-        this.itemDescription.innerHTML = newText;
-        console.log(this.itemDescription.innerHTML);
-        //this.itemDescription.textContent = newText;
+        this.itemDescriptionText.innerHTML = newText;
+        console.log(this.itemDescriptionText.innerHTML);
         this.descriptionContainer.position.x = position.x;
         this.descriptionContainer.position.y = position.y;
+    }
+
+    setGalleryContent(images, position) {
+        this.galleryContainer.position.x = position.x;
+        this.galleryContainer.position.y = position.y;
+
+        for (let i = 0; i < images.length; i++) {
+            this.websiteContentGroup.add(this.galleryContainer);
+            let imageElement = document.createElement('img');
+            let path = "https://nilsmeijer.com/Terminal/" + images[i];
+            imageElement.src = path;
+            imageElement.style.maxWidth = '50%';
+            imageElement.style.maxHeight = '100%';
+            this.itemGallery.appendChild(imageElement);
+        }
     }
 
     async loadFont() {

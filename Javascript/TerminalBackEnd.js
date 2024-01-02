@@ -1,6 +1,7 @@
 export default class TerminalBackEnd {
     directories;
     files;
+    fileURLs;
     properties;
 
     constructor(properties) {
@@ -15,6 +16,7 @@ export default class TerminalBackEnd {
 
             this.directories = Object.values(data.directories);
             this.files = Object.values(data.files);
+            // this.fileURLs = Object.values(data.fileURLs);
             return new Object({ directories: this.directories, files: this.files });
         } catch (error) {
             throw error;

@@ -39,14 +39,15 @@ if ($fileExists) {
     $fileContent = file_get_contents($parentDirectory . DIRECTORY_SEPARATOR . $actualFileName);
 
     if ($fileContent === false) {
-        echo 'Failed to read file content.';
+        $result = ['FileContent' => 'Invalid'];
+        echo json_encode($result);    
     } else {
         // Process or display the file content
         $result = ['FileName' => $actualFileName, 'FileContent' => $fileContent];
         echo json_encode($result);
     }
 } else {
-    $result = ['FileContent' => 'Error while reading file:' . $fileContent];
+    $result = ['FileContent' => 'Invalid'];
     echo json_encode($result);
 }
 ?>

@@ -160,7 +160,13 @@ export default class MainScene extends THREE.Scene {
                     try {
                         //TODO: implement dir for subdirectories
                         const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
-                        this.frontend.executeDirCommand(data);
+
+                        //Filter out images, I don't want those in the directory listing.
+                        const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
+                        const filesWithoutImages = data.files.filter(element => !this.endsWithAny(element.toLowerCase(), imageExtensions));
+
+                        const newDataObject = new Object({ directories: data.directories, files: filesWithoutImages });
+                        this.frontend.executeDirCommand(newDataObject);
                     } catch (error) {
                         throw (error);
                     }
@@ -174,12 +180,32 @@ export default class MainScene extends THREE.Scene {
                 break;
             case "show":
                 this.findAndReadFile();
+
+                (async () => {
+                    try {
+                        //TODO: implement dir for subdirectories
+                        const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
+                        console.log(data);
+                        //Filter out images, I don't want those in the directory listing.
+                        const excludedExtensions = ['.txt'];
+                        const imageURLs = data.files.filter(element => !this.endsWithAny(element.toLowerCase(), excludedExtensions));
+                        console.log(imageURLs);
+                        this.portfolioContent.setGalleryContent(imageURLs, new THREE.Vector2(2.5, -5));
+                    } catch (error) {
+                        throw (error);
+                    }
+                })();
                 break;
             case "clear":
                 this.frontend.clearTerminal();
                 break;
         }
     }
+
+    endsWithAny(str, suffixArray) {
+        return suffixArray.some(suffix => str.endsWith(suffix));
+    }
+
 
     async findAndReadFile() {
         let fileName = this.extractDataFromInput("path");
@@ -199,6 +225,7 @@ export default class MainScene extends THREE.Scene {
                 let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
                 this.frontend.addToTerminalContent(successionMessage);
 
+                this.portfolioContent.setItemTitle(fileData.FileName, new THREE.Vector2(3.3, 0));
                 this.portfolioContent.setItemDescriptionText(fileData.FileContent, new THREE.Vector2(3.3, -1.8));
             }
             catch (error) {
