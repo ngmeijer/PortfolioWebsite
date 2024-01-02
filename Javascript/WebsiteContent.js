@@ -23,6 +23,9 @@ export default class WebsiteContent extends TemplatePage {
     descriptionContainer;
     galleryContainer;
 
+    receivedImageURLs;
+    currentIndex;
+
     constructor(scene, properties) {
         super();
         this.scene = scene;
@@ -82,9 +85,7 @@ export default class WebsiteContent extends TemplatePage {
         this.galleryContainer.position.set(position.x, position.y, 0);
 
         this.itemGallery = document.createElement('div');
-        this.itemGallery.style.color = 'white';
         this.itemGallery.style.fontSize = `${30}` + 'px';
-        this.itemGallery.style.width = '30vw';
         this.itemGallery.id = "gallery";
 
         this.galleryContainer = new CSS2DObject(this.itemGallery);
@@ -121,19 +122,58 @@ export default class WebsiteContent extends TemplatePage {
         this.descriptionContainer.position.y = position.y;
     }
 
+    setCurrentImage(direction) {
+        let parent = document.getElementById("imageParent");
+
+        let newIndex = this.currentIndex + direction;
+        if(newIndex < 0)
+            newIndex = parent.children.length - 1;
+        if(newIndex > parent.children.length - 1)
+            newIndex = 0;
+
+        parent.children[this.currentIndex].display = 'none';
+        parent.children[newIndex].display = 'block'
+        this.currentIndex = newIndex;
+        console.log(newIndex);
+    }
+
     setGalleryContent(images, position) {
         this.galleryContainer.position.x = position.x;
         this.galleryContainer.position.y = position.y;
+
+        let previousButton = document.createElement('a');
+        previousButton.className = "GalleryButton";
+        previousButton.innerText = "<";
+        previousButton.onclick = () => this.setCurrentImage(-1);
+        this.itemGallery.appendChild(previousButton);
+        console.log(previousButton);
+
+        let imageParent = document.createElement('div');
+        imageParent.style.maxWidth = '50%';
+        imageParent.style.maxHeight = '100%';
+        imageParent.id = "imageParent";
+        this.itemGallery.appendChild(imageParent);
+        console.log(imageParent);
+        this.currentIndex = 0;
 
         for (let i = 0; i < images.length; i++) {
             this.websiteContentGroup.add(this.galleryContainer);
             let imageElement = document.createElement('img');
             let path = "https://nilsmeijer.com/Terminal/" + images[i];
             imageElement.src = path;
-            imageElement.style.maxWidth = '50%';
+            imageElement.style.maxWidth = '100%';
             imageElement.style.maxHeight = '100%';
-            this.itemGallery.appendChild(imageElement);
+            if (i !== 0) {
+                imageElement.style.display = 'none';
+            }
+            imageParent.appendChild(imageElement);
         }
+
+        let nextButton = document.createElement('a');
+        nextButton.className = "GalleryButton";
+        nextButton.innerText = ">";
+        nextButton.onclick = () => this.setCurrentImage(1);
+        this.itemGallery.appendChild(nextButton);
     }
 
     async loadFont() {

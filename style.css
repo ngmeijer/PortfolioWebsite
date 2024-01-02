@@ -27,3 +27,16 @@ p {
 a {
     color: #20C20E;
 }
+
+#gallery{
+    display:flex;
+    width:30vw;
+    color:white;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.GalleryButton{
+    color:white;
+    font-size: 3vw;
+}
