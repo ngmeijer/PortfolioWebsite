@@ -126,13 +126,13 @@ export default class WebsiteContent extends TemplatePage {
         let parent = document.getElementById("imageParent");
 
         let newIndex = this.currentIndex + direction;
-        if(newIndex < 0)
+        if (newIndex < 0)
             newIndex = parent.children.length - 1;
-        if(newIndex > parent.children.length - 1)
+        if (newIndex > parent.children.length - 1)
             newIndex = 0;
 
-        parent.children[this.currentIndex].display = 'none';
-        parent.children[newIndex].display = 'block'
+        parent.children[this.currentIndex].style.display = 'none';
+        parent.children[newIndex].style.display = 'block'
         this.currentIndex = newIndex;
         console.log(newIndex);
     }
@@ -141,12 +141,15 @@ export default class WebsiteContent extends TemplatePage {
         this.galleryContainer.position.x = position.x;
         this.galleryContainer.position.y = position.y;
 
-        let previousButton = document.createElement('a');
-        previousButton.className = "GalleryButton";
-        previousButton.innerText = "<";
-        previousButton.onclick = () => this.setCurrentImage(-1);
-        this.itemGallery.appendChild(previousButton);
-        console.log(previousButton);
+        let hasMultipleImages = images.length > 1;
+
+        if (hasMultipleImages) {
+            let previousButton = document.createElement('a');
+            previousButton.className = "GalleryButton";
+            previousButton.innerText = "<";
+            previousButton.onclick = () => this.setCurrentImage(-1);
+            this.itemGallery.appendChild(previousButton);
+        }
 
         let imageParent = document.createElement('div');
         imageParent.style.maxWidth = '50%';
@@ -169,11 +172,13 @@ export default class WebsiteContent extends TemplatePage {
             imageParent.appendChild(imageElement);
         }
 
-        let nextButton = document.createElement('a');
-        nextButton.className = "GalleryButton";
-        nextButton.innerText = ">";
-        nextButton.onclick = () => this.setCurrentImage(1);
-        this.itemGallery.appendChild(nextButton);
+        if (hasMultipleImages) {
+            let nextButton = document.createElement('a');
+            nextButton.className = "GalleryButton";
+            nextButton.innerText = ">";
+            nextButton.onclick = () => this.setCurrentImage(1);
+            this.itemGallery.appendChild(nextButton);
+        }
     }
 
     async loadFont() {
