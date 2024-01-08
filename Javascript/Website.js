@@ -165,7 +165,18 @@ export default class MainScene extends THREE.Scene {
                         const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
                         const filesWithoutImages = data.files.filter(element => !this.endsWithAny(element.toLowerCase(), imageExtensions));
 
-                        const newDataObject = new Object({ directories: data.directories, files: filesWithoutImages });
+                        const targetFilename = "Videos.txt";
+                        const filesWithoutVideoLinks = filesWithoutImages.filter(filePath => {
+                            const pathSegments = filePath.split("/");
+                            const filename = pathSegments[pathSegments.length - 1].toLowerCase();
+
+                            // Filter out file based on the target filename
+                            return filename !== targetFilename.toLowerCase();
+                        });
+
+                        console.log(filesWithoutVideoLinks);
+
+                        const newDataObject = new Object({ directories: data.directories, files: filesWithoutVideoLinks });
                         this.frontend.executeDirCommand(newDataObject);
                     } catch (error) {
                         throw (error);
@@ -183,14 +194,29 @@ export default class MainScene extends THREE.Scene {
 
                 (async () => {
                     try {
-                        //TODO: implement dir for subdirectories
                         const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
-                        console.log(data);
-                        //Filter out images, I don't want those in the directory listing.
+
                         const excludedExtensions = ['.txt'];
+                        let videoFile = data.files.filter(element => {
+                            const pathSegments = element.split("/");
+                            const filename = pathSegments[pathSegments.length - 1].toLowerCase();
+
+                            console.log(element);
+                            console.log(filename);
+                            // Filter out file based on the target filename
+                            return filename === "videos.txt";
+                        });
+
                         const imageURLs = data.files.filter(element => !this.endsWithAny(element.toLowerCase(), excludedExtensions));
-                        console.log(imageURLs);
-                        this.portfolioContent.setGalleryContent(imageURLs, new THREE.Vector2(2.5, -5));
+                        this.portfolioContent.setGalleryContent(imageURLs);
+
+                        if (videoFile !== "") {
+                            const videoFilePath = this.terminalProperties.currentDirectory + "\\" + videoFile;
+                            console.log(videoFilePath);
+                            const videoLinks = await this.backend.readFile(videoFilePath);
+                            console.log(videoLinks);
+                            this.portfolioContent.setIFrameContent(videoLinks);
+                        }
                     } catch (error) {
                         throw (error);
                     }
@@ -205,7 +231,6 @@ export default class MainScene extends THREE.Scene {
     endsWithAny(str, suffixArray) {
         return suffixArray.some(suffix => str.endsWith(suffix));
     }
-
 
     async findAndReadFile() {
         let fileName = this.extractDataFromInput("path");
@@ -225,8 +250,8 @@ export default class MainScene extends THREE.Scene {
                 let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
                 this.frontend.addToTerminalContent(successionMessage);
 
-                this.portfolioContent.setItemTitle(fileData.FileName, new THREE.Vector2(3.3, 0));
-                this.portfolioContent.setItemDescriptionText(fileData.FileContent, new THREE.Vector2(3.3, -1.8));
+                this.portfolioContent.setItemTitle(fileData.FileName);
+                this.portfolioContent.setItemDescriptionText(fileData.FileContent);
             }
             catch (error) {
                 //error?

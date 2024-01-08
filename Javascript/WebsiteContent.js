@@ -24,7 +24,12 @@ export default class WebsiteContent extends TemplatePage {
     galleryContainer;
 
     receivedImageURLs;
+    previousButton;
+    nextButton;
+    imageElement;
     currentIndex;
+
+    rootPath = "https://nilsmeijer.com/Terminal/";
 
     constructor(scene, properties) {
         super();
@@ -34,68 +39,36 @@ export default class WebsiteContent extends TemplatePage {
         this.contentWindow = new THREE.Group();
         this.websiteContentGroup = new THREE.Group();
 
-        this.createContentRenderer();
-
-        const titlePosition = new THREE.Vector2(3.3, 0);
-        this.createItemTitleText(50, titlePosition);
-
-        const descriptionPosition = new THREE.Vector2(3.3, 0);
-        this.createItemDescriptionText(20, descriptionPosition);
-
-        const galleryPosition = new THREE.Vector2(3.3, 0);
-        this.createItemImageGallery(galleryPosition);
+        this.createItemTitleText();
+        this.createItemDescriptionText();
+        this.createImageGallery();
     }
 
-    createContentRenderer() {
-        this.textRenderer = new CSS2DRenderer();
-        this.textRenderer.setSize(this.properties.size.x, this.properties.size.y);
-        this.textRenderer.domElement.style.position = 'absolute';
-        this.textRenderer.domElement.style.top = '0px';
-        this.textRenderer.domElement.id = "ContentRenderer";
-        document.body.appendChild(this.textRenderer.domElement);
+    createItemTitleText() {
+        this.itemTitle = document.getElementById('title');
+        this.itemTitle.textContent = "Portfolio";
     }
 
-    createItemTitleText(customFontSize = 50, position) {
-        this.itemTitle = document.createElement('p');
-        this.itemTitle.style.color = 'white';
-        this.itemTitle.style.fontSize = `${customFontSize}` + 'px';
-        this.itemTitle.style.width = '40vw';
-        this.itemTitle.id = "ItemTitle";
-
-        this.titleContainer = new CSS2DObject(this.itemTitle);
-        this.websiteContentGroup.add(this.titleContainer);
-        this.titleContainer.position.set(position.x, position.y, 0);
+    createItemDescriptionText() {
+        this.itemDescriptionText = document.getElementById('description');
     }
 
-    createItemDescriptionText(customFontSize = 20, position) {
-        this.itemDescriptionText = document.createElement('p');
-        this.itemDescriptionText.style.color = 'white';
-        this.itemDescriptionText.style.fontSize = `${customFontSize}` + 'px';
-        this.itemDescriptionText.style.width = '40vw';
-        this.itemDescriptionText.id = "ItemDescription";
+    createImageGallery() {
+        this.previousButton = document.getElementById('previous-image-button');
+        this.previousButton.style.display = 'none';
+        this.previousButton.onclick = () => this.setCurrentImage(-1);
 
-        this.descriptionContainer = new CSS2DObject(this.itemDescriptionText);
-        this.websiteContentGroup.add(this.descriptionContainer);
-        this.descriptionContainer.position.set(position.x, position.y, 0);
-    }
+        this.nextButton = document.getElementById('next-image-button');
+        this.nextButton.style.display = 'none';
+        console.log(this.nextButton);
+        this.nextButton.onclick = () => this.setCurrentImage(1);
 
-    createItemImageGallery(position) {
-        this.galleryContainer = new CSS2DObject(this.itemGallery);
-        this.websiteContentGroup.add(this.galleryContainer);
-        this.galleryContainer.position.set(position.x, position.y, 0);
-
-        this.itemGallery = document.createElement('div');
-        this.itemGallery.style.fontSize = `${30}` + 'px';
-        this.itemGallery.id = "gallery";
-
-        this.galleryContainer = new CSS2DObject(this.itemGallery);
-        this.websiteContentGroup.add(this.galleryContainer);
-        this.galleryContainer.position.set(position.x, position.y, 0);
+        this.imageElement = document.getElementById('current-image');
+        this.imageElement.style.display = 'none';
     }
 
     createWindow() {
         this.createBackground();
-        this.setItemTitle("Portfolio content", new THREE.Vector2(3.3, 0));
     }
 
     createBackground() {
@@ -109,76 +82,48 @@ export default class WebsiteContent extends TemplatePage {
         this.websiteContentGroup.position.set(-4.7, 3.4, 1);
     }
 
-    setItemTitle(newText, position) {
+    setItemTitle(newText) {
         this.itemTitle.textContent = newText;
-        this.titleContainer.position.x = position.x;
-        this.titleContainer.position.y = position.y;
     }
 
-    setItemDescriptionText(newText, position) {
+    setItemDescriptionText(newText) {
         this.itemDescriptionText.innerHTML = newText;
-        console.log(this.itemDescriptionText.innerHTML);
-        this.descriptionContainer.position.x = position.x;
-        this.descriptionContainer.position.y = position.y;
     }
 
     setCurrentImage(direction) {
-        let parent = document.getElementById("imageParent");
+        console.log(direction);
 
         let newIndex = this.currentIndex + direction;
         if (newIndex < 0)
-            newIndex = parent.children.length - 1;
-        if (newIndex > parent.children.length - 1)
+            newIndex = this.receivedImageURLs.length - 1;
+        if (newIndex > this.receivedImageURLs.length - 1)
             newIndex = 0;
 
-        parent.children[this.currentIndex].style.display = 'none';
-        parent.children[newIndex].style.display = 'block'
         this.currentIndex = newIndex;
-        console.log(newIndex);
+        let path =  this.rootPath + this.receivedImageURLs[this.currentIndex];
+        this.imageElement.src = path;
     }
 
-    setGalleryContent(images, position) {
-        this.galleryContainer.position.x = position.x;
-        this.galleryContainer.position.y = position.y;
+    setGalleryContent(images) {
+        if(images.length === 0)
+            return;
 
+        this.imageElement.style.display = 'block';
+        this.receivedImageURLs = images;
         let hasMultipleImages = images.length > 1;
-
-        if (hasMultipleImages) {
-            let previousButton = document.createElement('a');
-            previousButton.className = "GalleryButton";
-            previousButton.innerText = "<";
-            previousButton.onclick = () => this.setCurrentImage(-1);
-            this.itemGallery.appendChild(previousButton);
-        }
-
-        let imageParent = document.createElement('div');
-        imageParent.style.maxWidth = '50%';
-        imageParent.style.maxHeight = '100%';
-        imageParent.id = "imageParent";
-        this.itemGallery.appendChild(imageParent);
-        console.log(imageParent);
         this.currentIndex = 0;
 
-        for (let i = 0; i < images.length; i++) {
-            this.websiteContentGroup.add(this.galleryContainer);
-            let imageElement = document.createElement('img');
-            let path = "https://nilsmeijer.com/Terminal/" + images[i];
-            imageElement.src = path;
-            imageElement.style.maxWidth = '100%';
-            imageElement.style.maxHeight = '100%';
-            if (i !== 0) {
-                imageElement.style.display = 'none';
-            }
-            imageParent.appendChild(imageElement);
+        if (hasMultipleImages === false) {
+            this.previousButton.style.display = 'none';
+            this.nextButton.style.display = 'none';
+        } else {
+            this.previousButton.style.display = 'block';
+            this.nextButton.style.display = 'block';
         }
 
-        if (hasMultipleImages) {
-            let nextButton = document.createElement('a');
-            nextButton.className = "GalleryButton";
-            nextButton.innerText = ">";
-            nextButton.onclick = () => this.setCurrentImage(1);
-            this.itemGallery.appendChild(nextButton);
-        }
+        let imageElement = document.getElementById('current-image');
+        let path =  this.rootPath + images[this.currentIndex];
+        imageElement.src = path;
     }
 
     async loadFont() {

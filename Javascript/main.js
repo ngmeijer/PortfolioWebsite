@@ -45,7 +45,6 @@ function animate() {
     stats.begin();
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    scene.portfolioContent.textRenderer.render(scene, camera);
     stats.end();
 }
 animate();

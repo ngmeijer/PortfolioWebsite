@@ -86,6 +86,10 @@ export default class TerminalFrontEnd {
         this.cursorVisible = !this.cursorVisible;
     }
 
+    createIFrame(){
+        
+    }
+
     enableCursorTick(state) {
         switch (state) {
             case true:
