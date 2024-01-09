@@ -31,9 +31,7 @@ window.addEventListener('resize', onResize);
 function onResize() {
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
-
-    scene.updateScene();
-
+    
     camera.aspect = sizes.width / sizes.height;
     camera.updateProjectionMatrix();
 

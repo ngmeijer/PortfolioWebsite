@@ -38,6 +38,7 @@ export default class TerminalBackEnd {
 
     async readFile(directory) {
         try {
+            console.log(directory);
             const formattedPath = directory.replace(/\\/g, "/");
             const url = `https://nilsmeijer.com/Terminal/GetFile.php?data=${encodeURIComponent(formattedPath)}`;
             const response = await fetch(url);

@@ -51,10 +51,6 @@ export default class MainScene extends THREE.Scene {
         this.onDocumentKeyPress = this.onDocumentKeyPress.bind(this);
     }
 
-    updateScene() {
-        this.portfolioContent.textRenderer.setSize(this.portfolioProperties.size.x, this.portfolioProperties.size.y);
-    }
-
     onDocumentKeyPress(event) {
         if (this.frontend.startingUp == true) {
             return;
@@ -84,30 +80,22 @@ export default class MainScene extends THREE.Scene {
         //Prevent adding to input field if key is one of special keys.
         if (this.terminalProperties.specialKeys.includes(key))
             return;
-
-        this.addToInputField(key);
     }
 
     checkCharacterDelete(event, key) {
         if (key == "Backspace") {
             event.preventDefault();
-            if (this.frontend.inputFieldContent.endsWith(">")) {
+            if (this.frontend.inputFieldLine.value.endsWith(">")) {
                 console.log("Current character is >")
                 return true;
             }
 
-            const newContent = this.frontend.inputFieldContent.slice(0, -1);
-            this.frontend.inputFieldContent = newContent;
-            this.frontend.updateInputField();
+            const newContent = this.frontend.inputFieldLine.value.slice(0, -1);
+            this.frontend.inputFieldLine.value = newContent;
             return true;
         }
 
         return false;
-    }
-
-    addToInputField(key) {
-        this.frontend.inputFieldContent += key;
-        this.frontend.updateInputField();
     }
 
     onDocumentKeyRelease() {
@@ -122,13 +110,13 @@ export default class MainScene extends THREE.Scene {
 
     checkIfCommandIsValid() {
         //Find the last >.
-        let bracketIndex = this.frontend.inputFieldContent.indexOf(">");
+        let bracketIndex = this.frontend.inputFieldLine.value.indexOf(">");
         if (bracketIndex == -1) {
             return false;
         }
 
         //Retrieve the full input
-        this.pathUsedAsTarget = this.frontend.inputFieldContent.substring(bracketIndex + 1).trim();
+        this.pathUsedAsTarget = this.frontend.inputFieldLine.value.substring(bracketIndex + 1).trim();
 
         //Retrieve the command
         let command = this.extractDataFromInput("command");
@@ -148,13 +136,14 @@ export default class MainScene extends THREE.Scene {
         this.terminalProperties.currentDirectory = newDir;
     }
 
+    //TODO: clean up this shit.
     executeCommand() {
         const path = this.pathUsedAsTarget.substring(2).trim();
         switch (this.currentCommand) {
             case "help":
                 this.frontend.executeHelpCommand();
                 break;
-            //List all subdirectories of current directory.
+            //List all subdirectories and files of current directory.
             case "dir":
                 (async () => {
                     try {
@@ -210,13 +199,15 @@ export default class MainScene extends THREE.Scene {
                         const imageURLs = data.files.filter(element => !this.endsWithAny(element.toLowerCase(), excludedExtensions));
                         this.portfolioContent.setGalleryContent(imageURLs);
 
-                        if (videoFile !== "") {
-                            const videoFilePath = this.terminalProperties.currentDirectory + "\\" + videoFile;
-                            console.log(videoFilePath);
-                            const videoLinks = await this.backend.readFile(videoFilePath);
-                            console.log(videoLinks);
-                            this.portfolioContent.setIFrameContent(videoLinks);
-                        }
+                        if (videoFile === undefined)
+                            return;
+
+                        if (videoFile[0] === "")
+                            return;
+
+                        const videoLinks = await this.backend.readFile(videoFile[0]);
+                        this.portfolioContent.setIFrameContent(videoLinks.FileContent);
+
                     } catch (error) {
                         throw (error);
                     }

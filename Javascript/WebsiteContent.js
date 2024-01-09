@@ -29,6 +29,8 @@ export default class WebsiteContent extends TemplatePage {
     imageElement;
     currentIndex;
 
+    iframeParent;
+
     rootPath = "https://nilsmeijer.com/Terminal/";
 
     constructor(scene, properties) {
@@ -38,6 +40,8 @@ export default class WebsiteContent extends TemplatePage {
 
         this.contentWindow = new THREE.Group();
         this.websiteContentGroup = new THREE.Group();
+
+        this.iframeParent = document.getElementById('iframe-container');
 
         this.createItemTitleText();
         this.createItemDescriptionText();
@@ -60,7 +64,6 @@ export default class WebsiteContent extends TemplatePage {
 
         this.nextButton = document.getElementById('next-image-button');
         this.nextButton.style.display = 'none';
-        console.log(this.nextButton);
         this.nextButton.onclick = () => this.setCurrentImage(1);
 
         this.imageElement = document.getElementById('current-image');
@@ -100,12 +103,25 @@ export default class WebsiteContent extends TemplatePage {
             newIndex = 0;
 
         this.currentIndex = newIndex;
-        let path =  this.rootPath + this.receivedImageURLs[this.currentIndex];
+        let path = this.rootPath + this.receivedImageURLs[this.currentIndex];
         this.imageElement.src = path;
     }
 
+    setIFrameContent(videoLinks) {
+        let videoArray = videoLinks.split('\n');
+        var iframe = document.createElement("iframe");
+
+        if (this.iframeParent) {
+            this.iframeParent.appendChild(iframe);
+            iframe.setAttribute("src", videoArray[0]);
+            iframe.setAttribute('allowfullScreen', 'true')
+            iframe.style.width = "640px";
+            iframe.style.height = "480px";
+        }
+    }
+
     setGalleryContent(images) {
-        if(images.length === 0)
+        if (images.length === 0)
             return;
 
         this.imageElement.style.display = 'block';
@@ -122,7 +138,7 @@ export default class WebsiteContent extends TemplatePage {
         }
 
         let imageElement = document.getElementById('current-image');
-        let path =  this.rootPath + images[this.currentIndex];
+        let path = this.rootPath + images[this.currentIndex];
         imageElement.src = path;
     }
 
