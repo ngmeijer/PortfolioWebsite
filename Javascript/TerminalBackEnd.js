@@ -37,6 +37,9 @@ export default class TerminalBackEnd {
     }
 
     async readFile(directory) {
+        if(directory === undefined)
+            return;
+
         try {
             console.log(directory);
             const formattedPath = directory.replace(/\\/g, "/");

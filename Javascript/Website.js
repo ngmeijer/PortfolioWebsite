@@ -16,7 +16,6 @@ export default class MainScene extends THREE.Scene {
 
     currentCommand = "";
     portfolioContent;
-    backgroundPlane
     userIsTyping;
 
     constructor(size, camera) {
@@ -35,18 +34,12 @@ export default class MainScene extends THREE.Scene {
             try {
                 await this.fontManager.loadFonts();
                 this.frontend.createTerminal();
-                this.portfolioContent.createWindow();
             } catch (error) {
                 throw (error);
             }
         })();
 
         this.terminalProperties.currentDirectory = `MainDrive`;
-
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight.position.set(0, 0, 15);
-        dirLight.castShadow = true;
-        this.add(dirLight);
 
         this.onDocumentKeyPress = this.onDocumentKeyPress.bind(this);
     }
@@ -178,45 +171,46 @@ export default class MainScene extends THREE.Scene {
                 }
                 else this.cdUp();
                 break;
-            case "show":
-                this.findAndReadFile();
-
-                (async () => {
-                    try {
-                        const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
-
-                        const excludedExtensions = ['.txt'];
-                        let videoFile = data.files.filter(element => {
-                            const pathSegments = element.split("/");
-                            const filename = pathSegments[pathSegments.length - 1].toLowerCase();
-
-                            console.log(element);
-                            console.log(filename);
-                            // Filter out file based on the target filename
-                            return filename === "videos.txt";
-                        });
-
-                        const imageURLs = data.files.filter(element => !this.endsWithAny(element.toLowerCase(), excludedExtensions));
-                        this.portfolioContent.setGalleryContent(imageURLs);
-
-                        if (videoFile === undefined)
-                            return;
-
-                        if (videoFile[0] === "")
-                            return;
-
-                        const videoLinks = await this.backend.readFile(videoFile[0]);
-                        this.portfolioContent.setIFrameContent(videoLinks.FileContent);
-
-                    } catch (error) {
-                        throw (error);
-                    }
-                })();
-                break;
             case "clear":
                 this.frontend.clearTerminal();
                 break;
         }
+    }
+
+    async showContentOfDirectory() {
+        const hasFoundFile = await this.findAndReadFile();
+
+        (async () => {
+            try {
+                const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
+                if(data.files.length === 0)
+                    return;
+                
+                const excludedExtensions = ['.txt'];
+                let videoFile = data.files.filter(element => {
+                    const pathSegments = element.split("/");
+                    const filename = pathSegments[pathSegments.length - 1].toLowerCase();
+
+                    // Filter out file based on the target filename
+                    return filename === "videos.txt";
+                });
+
+                const imageURLs = data.files.filter(element => !this.endsWithAny(element.toLowerCase(), excludedExtensions));
+                this.portfolioContent.setGalleryContent(imageURLs);
+
+                if (videoFile === undefined)
+                    return;
+
+                if (videoFile[0] === "")
+                    return;
+
+                const videoLinks = await this.backend.readFile(videoFile[0]);
+                this.portfolioContent.setIFrameContent(videoLinks.FileContent);
+
+            } catch (error) {
+                throw (error);
+            }
+        })();
     }
 
     endsWithAny(str, suffixArray) {
@@ -227,7 +221,7 @@ export default class MainScene extends THREE.Scene {
         let fileName = this.extractDataFromInput("path");
         (async () => {
             try {
-                const filePath = this.terminalProperties.currentDirectory + "\\" + fileName;
+                const filePath = this.terminalProperties.currentDirectory + "\\" + "description.txt";
                 console.log(filePath);
                 const fileData = await this.backend.readFile(filePath);
                 console.log(fileData);
@@ -265,6 +259,7 @@ export default class MainScene extends THREE.Scene {
             return;
         }
 
+        this.portfolioContent.clearWindow();
         //Move up to parent directory.
         this.backend.moveUpDirectory();
         this.frontend.resetInputLine();
@@ -291,6 +286,8 @@ export default class MainScene extends THREE.Scene {
             this.backend.moveDownDirectory(data.Name);
             this.frontend.reformatDirectory(data.Name);
             this.frontend.resetInputLine();
+            const canShowContent = await this.showContentOfDirectory();
+
         } catch (error) {
             console.error(error);
         }

@@ -4,11 +4,6 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 export default class TerminalFrontEnd {
     scene;
 
-    terminalContentGroup;
-
-    cursorVisible = true;
-    caretTick;
-
     properties;
     inputFieldContent = "";
     startingUp;
@@ -22,11 +17,6 @@ export default class TerminalFrontEnd {
         this.scene = scene;
         this.properties = properties;
         this.startingUp = true;
-
-        this.terminalContentGroup = new THREE.Group();
-        this.terminalContentGroup.position.set(-9.3, -3.7, 0);
-
-        this.scene.add(this.terminalContentGroup);
 
         this.terminalLineParent = document.getElementById('terminal-content');
         this.inputFieldLine = document.getElementById('input-field');
@@ -58,10 +48,6 @@ export default class TerminalFrontEnd {
 
     graduallyCreateStartingContent(text) {
         this.addToTerminalContent(text);
-    }
-
-    createIFrame(){
-        
     }
 
     addToTerminalContent(textGiven) {

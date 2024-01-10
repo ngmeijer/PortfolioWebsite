@@ -20,6 +20,7 @@
 html,
 body {
     overflow: hidden;
+    user-select: none;
 }
 
 p {
@@ -29,116 +30,179 @@ p {
 
 a {
     color: #20C20E;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-#terminal-window { 
+#terminal-window {
     margin: 0px;
-    padding:0px;
-    z-index: 1100;
-    
-    width:42vw;
-    height:100vh;
+    padding: 0px;
+    z-index: 1;
+    background-color: #0D0D0D;
 
-    position:absolute;
-    left:1.5vw;
+    width: 40%;
+    height: 100vh;
 
-    display:flex;
+    position: absolute;
+
+    display: flex;
     flex-direction: column-reverse;
     justify-content: flex-start;
 }
 
-#input-field{
-    width:100%;
-    height:4vh;
-    color:#20C20E;
+#input-field {
+    position: absolute;
+    width: 98%;
+    height: 4vh;
+    left: 1vw;
+    color: #BF3A0A;
     font-size: 2rem;
-    background-color: rgb(44, 44, 44);
-    border:none;
-    outline:none;
-    font-family: 'hack', sans-serif;
-    
+    background-color: #0D0D0D;
+    border: none;
+    outline: none;
+    font-family: 'Courier', sans-serif;
 }
 
-#terminal-content{
-    position:absolute;
-    height:94vh;
-    width:100%;
-    top:0;
-    display:flex;
+#terminal-content {
+    position: absolute;
+    height: 94vh;
+    width: 100%;
+    top: 0;
+    left: 2%;
+    display: flex;
     flex-direction: column;
     justify-content: flex-end;
 }
 
-#terminal-content > div{
-    font-family: 'hack', sans-serif;
-    color:#20C20E;
+.terminal-line {
+    font-family: 'Courier', sans-serif;
+    color: #BF3A0A;
     font-size: 1.1rem;
+    margin-left:5%;
 }
 
 #content-window {
-    margin:0;
-    padding:0px;
-    z-index: 1000;
-    width:55vw;
-    height:100vh;
+    margin: 0;
+    padding: 0px;
+    z-index: 2;
+    width: 60%;
+    height: 100vh;
 
     position: absolute;
-    left:45vw;
+    left: 40%;
 
-    display:flex;
+    display: flex;
     flex-direction: column;
 
-    background-color:rgb(27, 27, 27);
+    background-color: #401404;
+
+    overflow-y: auto;
 }
+
+#content-offset{
+    position:absolute;
+    width:98%;
+    height:100%;
+    left:2%;
+}
+
+#size-controller {
+    z-index: 10;
+    position: absolute;
+    background: #0D0D0D;
+    height: 100%;
+    width: 0.5vw;
+    top: 0vh;
+    left: 0%;
+    cursor: col-resize;
+}
+
+#size-controller::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -500%;
+    border-style: solid;
+    border-width: 38px 38px 38px 38px;
+    border-color: transparent #401404 transparent transparent;
+}
+
+@media only screen and (max-width: 600px) {
+    #content-window {
+        top: 0vh;
+        left: 0vw;
+        width: 100vw;
+        height: 60%;
+    }
+
+    #terminal-window {
+        left: 0vw;
+        bottom: 0vh;
+        width: 100vw;
+        height: 40%;
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+    }
+
+    #terminal-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    #input-field {
+        z-index: 4;
+    }
+}
+
 
 #title {
     font-size: 4rem;
-    color: white;
+    color: #F2CDAC;
 }
 
-#description{
+#description {
     font-size: 1.3rem;
-    color:white;
-    width:95%;
+    color: #F2CDAC;
+    width: 95%;
     margin-bottom: 2vh;
 }
 
-#iframe-container{
+#iframe-container {
     z-index: inherit;
 }
 
-iframe{
-    border:none;    
+iframe {
+    border: none;
 }
 
-#gallery-container{
-    display:flex;
+#gallery-container {
+    display: flex;
     flex-direction: row;
     font-size: 1.5rem;
-    width:80%;
-    color:white;
+    width: 80%;
+    color: white;
     justify-content: center;
     align-items: center;
-    gap:20px;
+    gap: 20px;
 }
 
-#gallery-container > a{
+#gallery-container>a {
     font-size: 4rem;
 }
 
 #gallery {
     display: flex;
     width: 10vw;
-    height:20vh;
+    height: 20vh;
     color: white;
     justify-content: space-between;
     align-items: center;
 }
 
-#current-image{
-    width:50%;
-    height:80%;
+#current-image {
+    width: 50%;
+    height: 80%;
     object-fit: cover;
 }
 

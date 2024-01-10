@@ -21,13 +21,21 @@ export default class WebsiteContent extends TemplatePage {
 
     titleContainer;
     descriptionContainer;
-    galleryContainer;
 
     receivedImageURLs;
     previousButton;
     nextButton;
     imageElement;
     currentIndex;
+
+    // Variables to track mouse position and resizing state
+    isResizing = false;
+    initialMouseX;
+    initialContentLeft;
+    initialContentWidth;
+
+    initialTerminalWidth;
+    currentTerminalWidth;
 
     iframeParent;
 
@@ -46,6 +54,53 @@ export default class WebsiteContent extends TemplatePage {
         this.createItemTitleText();
         this.createItemDescriptionText();
         this.createImageGallery();
+
+        const selector = document.getElementById('size-controller');
+        const content = document.getElementById('content-window');
+        const terminal = document.getElementById('terminal-window');
+
+        // Event listener for mouse down on the selector
+        selector.addEventListener('mousedown', (event) => {
+            this.isResizing = true;
+            this.initialMouseX = event.clientX;
+            this.initialContentLeft = content.offsetLeft;
+            this.initialContentWidth = content.offsetWidth;
+            this.initialTerminalWidth = terminal.offsetWidth;
+
+            // Prevent text selection while dragging
+            event.preventDefault();
+        });
+
+        // Event listener for mouse move
+        document.addEventListener('mousemove', (event) => {
+            if (this.isResizing) {
+                const deltaX = event.clientX - this.initialMouseX;
+                let newContentWidth = this.initialContentWidth - deltaX;
+        
+                // Limit the width to 70% of the container's width
+                const maxWidth = content.parentElement.offsetWidth * 0.7;
+                newContentWidth = Math.min(newContentWidth, maxWidth);
+        
+                // Adjust the left position to keep the right side in the same position
+                const newLeftAdjusted = this.initialContentLeft + (this.initialContentWidth - newContentWidth);
+        
+                // Check if the new width is within allowed limits
+                if (newContentWidth > 500 && newContentWidth <= maxWidth) {
+                    const newTerminalWidth = this.initialTerminalWidth - (newContentWidth - this.initialContentWidth);
+        
+                    // Update the terminal and content elements
+                    terminal.style.width = `${newTerminalWidth}px`;
+                    content.style.width = `${newContentWidth}px`;
+                    content.style.left = `${newLeftAdjusted}px`;
+                }
+            }
+        });
+
+        // Event listener for mouse up
+        document.addEventListener('mouseup', () => {
+            this.isResizing = false;
+        });
+
     }
 
     createItemTitleText() {
@@ -70,19 +125,10 @@ export default class WebsiteContent extends TemplatePage {
         this.imageElement.style.display = 'none';
     }
 
-    createWindow() {
-        this.createBackground();
-    }
-
-    createBackground() {
-        const geometry = new THREE.BoxGeometry(10, 10, 1);
-        const material = new THREE.MeshPhongMaterial({ color: 0x262626 });
-        const portfolioBackground = new THREE.Mesh(geometry, material);
-        this.contentWindow.add(portfolioBackground);
-        this.contentWindow.position.set(4, 0, 0);
-        this.scene.add(this.contentWindow);
-        this.contentWindow.add(this.websiteContentGroup);
-        this.websiteContentGroup.position.set(-4.7, 3.4, 1);
+    clearWindow() {
+        this.iframeParent.replaceChildren();
+        this.itemTitle.textContent = "";
+        this.itemDescriptionText.textContent = "";
     }
 
     setItemTitle(newText) {
@@ -94,8 +140,6 @@ export default class WebsiteContent extends TemplatePage {
     }
 
     setCurrentImage(direction) {
-        console.log(direction);
-
         let newIndex = this.currentIndex + direction;
         if (newIndex < 0)
             newIndex = this.receivedImageURLs.length - 1;
@@ -109,14 +153,17 @@ export default class WebsiteContent extends TemplatePage {
 
     setIFrameContent(videoLinks) {
         let videoArray = videoLinks.split('\n');
-        var iframe = document.createElement("iframe");
 
-        if (this.iframeParent) {
-            this.iframeParent.appendChild(iframe);
-            iframe.setAttribute("src", videoArray[0]);
-            iframe.setAttribute('allowfullScreen', 'true')
-            iframe.style.width = "640px";
-            iframe.style.height = "480px";
+        for (let i = 0; i < videoArray.length; i++) {
+            var iframe = document.createElement("iframe");
+
+            if (this.iframeParent) {
+                this.iframeParent.appendChild(iframe);
+                iframe.setAttribute("src", videoArray[i]);
+                iframe.setAttribute('allowfullScreen', 'true')
+                iframe.style.width = "50%";
+                iframe.style.height = "30vh";
+            }
         }
     }
 
