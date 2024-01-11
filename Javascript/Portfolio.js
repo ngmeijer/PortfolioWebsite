@@ -4,7 +4,7 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
-export default class WebsiteContent extends TemplatePage {
+export default class Portfolio extends TemplatePage {
     contentWindow;
     scene;
     properties;
@@ -60,34 +60,36 @@ export default class WebsiteContent extends TemplatePage {
         const terminal = document.getElementById('terminal-window');
 
         // Event listener for mouse down on the selector
-        selector.addEventListener('mousedown', (event) => {
-            this.isResizing = true;
-            this.initialMouseX = event.clientX;
-            this.initialContentLeft = content.offsetLeft;
-            this.initialContentWidth = content.offsetWidth;
-            this.initialTerminalWidth = terminal.offsetWidth;
+        if (selector !== undefined) {
+            selector.addEventListener('mousedown', (event) => {
+                this.isResizing = true;
+                this.initialMouseX = event.clientX;
+                this.initialContentLeft = content.offsetLeft;
+                this.initialContentWidth = content.offsetWidth;
+                this.initialTerminalWidth = terminal.offsetWidth;
 
-            // Prevent text selection while dragging
-            event.preventDefault();
-        });
+                // Prevent text selection while dragging
+                event.preventDefault();
+            });
+        }
 
         // Event listener for mouse move
         document.addEventListener('mousemove', (event) => {
             if (this.isResizing) {
                 const deltaX = event.clientX - this.initialMouseX;
                 let newContentWidth = this.initialContentWidth - deltaX;
-        
+
                 // Limit the width to 70% of the container's width
                 const maxWidth = content.parentElement.offsetWidth * 0.7;
                 newContentWidth = Math.min(newContentWidth, maxWidth);
-        
+
                 // Adjust the left position to keep the right side in the same position
                 const newLeftAdjusted = this.initialContentLeft + (this.initialContentWidth - newContentWidth);
-        
+
                 // Check if the new width is within allowed limits
                 if (newContentWidth > 500 && newContentWidth <= maxWidth) {
                     const newTerminalWidth = this.initialTerminalWidth - (newContentWidth - this.initialContentWidth);
-        
+
                     // Update the terminal and content elements
                     terminal.style.width = `${newTerminalWidth}px`;
                     content.style.width = `${newContentWidth}px`;
@@ -99,6 +101,7 @@ export default class WebsiteContent extends TemplatePage {
         // Event listener for mouse up
         document.addEventListener('mouseup', () => {
             this.isResizing = false;
+            console.log("not resizing anymore.")
         });
 
     }
@@ -161,8 +164,6 @@ export default class WebsiteContent extends TemplatePage {
                 this.iframeParent.appendChild(iframe);
                 iframe.setAttribute("src", videoArray[i]);
                 iframe.setAttribute('allowfullScreen', 'true')
-                iframe.style.width = "50%";
-                iframe.style.height = "30vh";
             }
         }
     }

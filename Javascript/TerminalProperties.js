@@ -3,14 +3,14 @@ export default class TerminalProperties {
     asciiFont;
     
     asciiArt = `
- _   _ _ _      ___  ___     _ _           
-| \\ | (_) |     |  \\/  |    (_|_)          
-|  \\| |_| |___  | .  . | ___ _ _  ___ _ __ 
-| . \` | | / __| | |\\/| |/ _ \\ | |/ _ \\ '__|
-| |\\  | | \\__ \\ | |  | |  __/ | |  __/ |   
-\\_| \\_/\\_|___/ \\_|  |_|\\___|_|_|\\___|_|   
-                             _/ |          
-                            |__/           `;
+    
+    _   ___ __        __  ___     _   _          
+   / | / (_) /____   /  |/  /__  (_) (_)__  _____
+  /  |/ / / / ___/  / /|_/ / _ \/ / / / _ \/ ___/
+ / /|  / / (__  )  / /  / /  __/ / / /  __/ /    
+/_/ |_/_/_/____/  /_/  /_/\___/_/_/ /\___/_/     
+                               /___/             
+`;
 
 
     customDefaultText = ["Portfolio of Nils Meijer [Version 01.01.2024]",
@@ -23,17 +23,17 @@ export default class TerminalProperties {
         "Insert", "Home", "PageUp", "PageDown", "Delete", "End",
         "Numlock", "ScrollLock", "Pause", "Escape", "Meta", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"]
     validCommandsMap = new Map([
-        ["help", "Lists all commands available."],
-        ["dir", "Lists all subdirectories of this directory."],
-        ["cd", "Move into specified directory.\n\tExample: 'cd Portfolio' will move current directory to Portfolio.\n\t'../' will move current directory one level up."],
-        ["clear", "Clear the terminal screen"]
+        ["<span class='syntax'>help</span>", "Lists all commands available."],
+        ["<span class='syntax'>dir</span>", "Lists all subdirectories of this directory."],
+        ["<span class='syntax'>cd</span>", "Move into specified directory.\n<span class='command-description'>Example: '<span class='syntax'>cd</span> Portfolio' will move current directory to Portfolio.\n\t'<span class='syntax'>../</span>' will move current directory one level up.</span>"],
+        ["<span class='syntax'>clear</span>", "Clear the terminal screen"]
     ]);
     messageOnCommandDir = "Finding directories..."
     messageOnCommandType = ["Opening file", "and reading contents..." ]
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";
     errorMessageInvalidDirectory = "The system cannot find the path specified.";
     errorMessageInvalidFile = "Error reading file."
-    helpMessage = "Use 'help' to show valid commands.";
+    helpMessage = "Use '<span class='syntax'>help</span>' to show valid commands.";
 
     //
     rootDirectory = "MainDrive";

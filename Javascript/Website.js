@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import WebsiteContent from './WebsiteContent.js';
+import Portfolio from './Portfolio.js';
 import TerminalProperties from './TerminalProperties.js';
 import PortfolioProperties from './PortfolioProperties.js';
 import TerminalFrontEnd from './TerminalFrontEnd.js';
@@ -29,7 +29,7 @@ export default class MainScene extends THREE.Scene {
         this.frontend = new TerminalFrontEnd(this, this.terminalProperties);
         this.backend = new TerminalBackEnd(this.terminalProperties);
 
-        this.portfolioContent = new WebsiteContent(this, this.portfolioProperties);
+        this.portfolioContent = new Portfolio(this, this.portfolioProperties);
         (async () => {
             try {
                 await this.fontManager.loadFonts();
@@ -60,7 +60,7 @@ export default class MainScene extends THREE.Scene {
 
         //Check if content should and can be submitted.
         if (key === "Enter") {
-            this.frontend.addToTerminalContent(this.frontend.inputFieldContent);
+            // this.frontend.addToTerminalContent(this.frontend.inputFieldLine.textContent);
 
             let isValid = this.checkIfCommandIsValid();
 
@@ -116,13 +116,19 @@ export default class MainScene extends THREE.Scene {
         this.currentCommand = command.toLowerCase();
 
         //If array does not contain command, it is invalid. Throw error message to terminal.
-        if (!this.terminalProperties.validCommandsMap.has(this.currentCommand)) {
-            this.frontend.addToTerminalContent("'" + this.currentCommand + "'" + this.terminalProperties.errorMessageInvalidCommand);
+        if (!Array.from(this.terminalProperties.validCommandsMap.keys()).some(key => this.stripHtmlTags(key) === this.currentCommand)) {
+            let errorText = `'<span class='syntax'>${this.currentCommand}</span>' ${this.terminalProperties.errorMessageInvalidCommand}`;
+            console.log(errorText);
+            this.frontend.addToTerminalContent(errorText);
             this.frontend.addToTerminalContent(this.terminalProperties.helpMessage);
             return false;
         }
 
         return true;
+    }
+
+    stripHtmlTags(text) {
+        return text.replace(/<\/?[^>]+(>|$)/g, "");
     }
 
     moveIntoDirectory(newDir) {
@@ -132,6 +138,7 @@ export default class MainScene extends THREE.Scene {
     //TODO: clean up this shit.
     executeCommand() {
         const path = this.pathUsedAsTarget.substring(2).trim();
+        console.log(this.currentCommand);
         switch (this.currentCommand) {
             case "help":
                 this.frontend.executeHelpCommand();
@@ -166,10 +173,15 @@ export default class MainScene extends THREE.Scene {
                 })();
                 break;
             case "cd":
-                if (path !== "../") {
+                if (path === "./") {
+                    let errorText = `'<span class='syntax'>${path}</span>' is not a valid input. To move back up a directory, use "<span class='syntax'>cd ../</span>".`;
+                    this.frontend.addToTerminalContent(errorText);
+                } else if (path !== "../") {
                     this.cdDown(path);
+                } else {
+                    this.cdUp();
                 }
-                else this.cdUp();
+                
                 break;
             case "clear":
                 this.frontend.clearTerminal();
@@ -183,9 +195,9 @@ export default class MainScene extends THREE.Scene {
         (async () => {
             try {
                 const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
-                if(data.files.length === 0)
+                if (data.files.length === 0)
                     return;
-                
+
                 const excludedExtensions = ['.txt'];
                 let videoFile = data.files.filter(element => {
                     const pathSegments = element.split("/");
@@ -227,15 +239,19 @@ export default class MainScene extends THREE.Scene {
                 console.log(fileData);
 
                 if (fileData.FileContent === "Invalid") {
-                    this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
+                    //this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
                     return;
                 }
 
                 //Succeeded reading the file and displaying contents
-                let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '${fileName}' ${this.terminalProperties.messageOnCommandType[1]}`;
+                let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '<span class='syntax'>${fileName}</span>' ${this.terminalProperties.messageOnCommandType[1]}`;
                 this.frontend.addToTerminalContent(successionMessage);
 
-                this.portfolioContent.setItemTitle(fileData.FileName);
+                const pathSegments = filePath.split("\\");
+
+                let folderName = pathSegments[pathSegments.length - 2];
+                console.log(folderName);
+                this.portfolioContent.setItemTitle(folderName);
                 this.portfolioContent.setItemDescriptionText(fileData.FileContent);
             }
             catch (error) {
@@ -273,7 +289,7 @@ export default class MainScene extends THREE.Scene {
             const data = await this.backend.checkDirectory(pathToCheck);
             console.log(data);
             if (data.Valid === false) {
-                this.frontend.addToTerminalContent(this.errorMessageInvalidDirectory);
+                this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidDirectory);
                 return data;
             }
 
@@ -286,8 +302,7 @@ export default class MainScene extends THREE.Scene {
             this.backend.moveDownDirectory(data.Name);
             this.frontend.reformatDirectory(data.Name);
             this.frontend.resetInputLine();
-            const canShowContent = await this.showContentOfDirectory();
-
+            await this.showContentOfDirectory();
         } catch (error) {
             console.error(error);
         }

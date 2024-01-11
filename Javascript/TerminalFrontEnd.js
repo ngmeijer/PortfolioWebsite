@@ -30,7 +30,7 @@ export default class TerminalFrontEnd {
         let delay = 0;
         // Print each line separately
         lines.forEach(line => {
-            setTimeout(() => this.graduallyCreateStartingContent(line, this.properties.asciiFont, 0), delay);
+            setTimeout(() => this.graduallyCreateStartingContent(line, "ascii", "pre"), delay);
             delay += 100;
         });
 
@@ -39,24 +39,24 @@ export default class TerminalFrontEnd {
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[2]), 1700);
         setTimeout(() => this.graduallyCreateStartingContent(this.properties.customDefaultText[3]), 2200);
         setTimeout(() => {
-            this.graduallyCreateStartingContent("Enter 'help' to show a list of available commands.", this.properties.defaultFont);
+            this.graduallyCreateStartingContent(this.properties.helpMessage);
             this.startingUp = false;
         }, 2500);
 
         this.resetInputLine();
     }
 
-    graduallyCreateStartingContent(text) {
-        this.addToTerminalContent(text);
+    graduallyCreateStartingContent(text, className, element) {
+        this.addToTerminalContent(text, className, element);
     }
 
-    addToTerminalContent(textGiven) {
-        if (textGiven == undefined) {
+    addToTerminalContent(textGiven, className = "terminal-line", elementTag = "div") {
+        if (textGiven === undefined || textGiven === "") {
             console.log("text given is not valid.")
             return;
         }
-        let newLineElement = document.createElement("div");
-        newLineElement.className = "terminal-line";
+        let newLineElement = document.createElement(elementTag);
+        newLineElement.className = className;
 
         textGiven = textGiven.replace(/\n/g, "<br>");
         textGiven = textGiven.replace(/\t/g, "&nbsp;&nbsp;&nbsp;");
@@ -70,8 +70,10 @@ export default class TerminalFrontEnd {
         const map = this.properties.validCommandsMap;
         const keyArray = Array.from(map.keys())
         const valueArray = Array.from(map.values());
+
         for (let i = 0; i < keyArray.length; i++) {
-            this.addToTerminalContent("     " + keyArray[i] + " - " + valueArray[i]);
+            let messageText = `<pre>    ${keyArray[i]} - ${valueArray[i]}</pre>`
+            this.addToTerminalContent(messageText);
         }
     }
 
