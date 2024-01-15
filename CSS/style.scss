@@ -1,0 +1,113 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    /* Blue 2*/
+    --text-color-terminal: #92BADD;
+    --text-color-content: #F4E9CD;
+    --text-highlight-color: #F7F7FF;
+    --background-color-main: #333D48;
+    --background-color-secondary: #1D2534;
+    --button-color: #005CE5;
+
+    --size-default: 22px;
+    --size-sm: 16px;
+    --color-blue: var(--text-color-terminal);
+    --color-black: #000;
+}
+
+@font-face {
+    font-family: 'hack';
+    src: url('static/fonts/hack.json');
+}
+
+@font-face {
+    font-family: 'slant';
+    src: url('static/fonts/slant.TTF');
+}
+
+.webgl {
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+    z-index: 0;
+}
+
+html,
+body {
+    overflow: hidden;
+    user-select: none;
+}
+
+p {
+    font-family: 'hack', sans-serif;
+    transform-origin: top left;
+}
+
+a {
+    color: var(--button-color);
+    cursor: pointer;
+}
+
+#size-controller {
+    z-index: 100;
+    height: 100vh;
+    width: 1vw;
+    top: 0vh;
+    right: 0%;
+    color: red;
+    cursor: col-resize;
+}
+
+#size-controller::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -50%;
+    z-index: 200;
+    border-style: solid;
+    border-width: 38px 38px 38px 38px;
+    border-color: transparent #401404 transparent transparent;
+}
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --glowColor {
+    syntax: "<color>";
+    initial-value: #58DD93;
+}
+
+@keyframes rotate {
+    0% {
+        --angle: 0deg;
+        --glowColor: var(--color-blue);
+    }
+
+    100% {
+        --angle: 360deg;
+        --glowColor: var(--color-blue);
+    }
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    background:
+        linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%,
+            var(--color-black) 100%),
+        radial-gradient(circle at 50% -50%,
+            #335F4B 0%,
+            var(--color-black) 100%);
+    font-family: monospace;
+    font-size: 20px;
+}

@@ -1,0 +1,180 @@
+#terminal-window {
+    margin: 0px;
+    padding: 0px;
+    z-index: 1;
+    background-color: var(--background-color-secondary);
+
+    width: 40%;
+    height: 100vh;
+    left: 0;
+
+    position: absolute;
+
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+}
+
+#input-field {
+    position: absolute;
+    width: 98%;
+    height: 4vh;
+    left: 1vw;
+    color: var(--text-color-terminal);
+    font-size: 2rem;
+    background-color: var(--background-color-secondary);
+    border: none;
+    outline: none;
+    font-family: 'Courier', sans-serif;
+    user-select: none;
+}
+
+#terminal-content {
+    position: absolute;
+    height: 94vh;
+    width: 90%;
+    top: 0;
+    left: 2.5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.terminal-line {
+    font-family: 'Courier', sans-serif;
+    color: var(--text-color-terminal);
+    font-size: 1.1rem;
+    padding-bottom: 0.5vh;
+    width: 100%;
+}
+
+.ascii {
+    font-family: 'courier';
+    color: var(--text-color-terminal);
+    font-size: 1.1rem;
+    padding-bottom: 0.5vh;
+    width: 100%;
+}
+
+.terminal-line>pre {
+    width: 100%;
+    white-space: pre-wrap;
+}
+
+.command-description {
+    padding-left: 3.5vw;
+}
+
+.syntax {
+    color: var(--text-highlight-color);
+}
+
+@media only screen and (max-width: 600px) {
+    #terminal-window {
+        left: 0vw;
+        bottom: 0vh;
+        width: 100vw;
+        height: 40%;
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+    }
+
+    #terminal-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    #input-field {
+        z-index: 4;
+    }
+}
+
+#input-field:not(:focus) {
+    transition: font-size 0.3s ease, color 0.3s ease;
+    font-size: 2rem;
+    color: var(--text-color-terminal);
+    animation: heartbeat 2s ease-in-out infinite both;
+}
+
+#input-field:not(:focus):hover {
+    font-size: 2.1rem;
+    color: var(--text-highlight-color);
+}
+
+#input-field:focus {
+    transition: font-size 0.3s ease, color 0.3s ease;
+    font-size: 2.1rem;
+    color: var(--text-highlight-color);
+}
+
+@-webkit-keyframes heartbeat {
+    from {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+      -webkit-transform-origin: center center;
+              transform-origin: center center;
+      -webkit-animation-timing-function: ease-out;
+              animation-timing-function: ease-out;
+    }
+    10% {
+      -webkit-transform: scale(0.91);
+              transform: scale(0.91);
+      -webkit-animation-timing-function: ease-in;
+              animation-timing-function: ease-in;
+    }
+    17% {
+      -webkit-transform: scale(0.98);
+              transform: scale(0.98);
+      -webkit-animation-timing-function: ease-out;
+              animation-timing-function: ease-out;
+    }
+    33% {
+      -webkit-transform: scale(0.87);
+              transform: scale(0.87);
+      -webkit-animation-timing-function: ease-in;
+              animation-timing-function: ease-in;
+    }
+    45% {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+      -webkit-animation-timing-function: ease-out;
+              animation-timing-function: ease-out;
+    }
+  }
+  @keyframes heartbeat {
+    from {
+      -webkit-transform: scaleX(1);
+              transform: scaleX(1);
+      -webkit-transform-origin: center center;
+              transform-origin: center center;
+      -webkit-animation-timing-function: ease-out;
+              animation-timing-function: ease-out;
+    }
+    10% {
+      -webkit-transform: scaleX(0.91);
+              transform: scaleX(0.91);
+      -webkit-animation-timing-function: ease-in;
+              animation-timing-function: ease-in;
+    }
+    17% {
+      -webkit-transform: scaleX(0.98);
+              transform: scaleX(0.98);
+      -webkit-animation-timing-function: ease-out;
+              animation-timing-function: ease-out;
+    }
+    33% {
+      -webkit-transform: scaleX(0.9);
+              transform: scaleX(0.9);
+      -webkit-animation-timing-function: ease-in;
+              animation-timing-function: ease-in;
+    }
+    45% {
+      -webkit-transform: scaleX(1);
+              transform: scaleX(1);
+      -webkit-animation-timing-function: ease-out;
+              animation-timing-function: ease-out;
+    }
+  }
+  

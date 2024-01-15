@@ -1,0 +1,100 @@
+#content-window {
+    margin: 0;
+    padding: 0px;
+    z-index: 2;
+    width: 60%;
+    height: 100vh;
+
+    position: absolute;
+    left: 40%;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--background-color-main);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#content-offset {
+    position: absolute;
+    width: 98%;
+    height: 100%;
+    left: 2%;
+}
+
+#title {
+    font-size: 4rem;
+    color: var(--text-color-content);
+}
+
+#description {
+    font-size: 1.1rem;
+    color: var(--text-color-content);
+    width: 95%;
+    margin-bottom: 2vh;
+}
+
+#iframe-container {
+    z-index: inherit;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    /* padding-top: 56.25%; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+iframe {
+    border: none;
+    width: 80%;
+    padding-bottom: 2vh;
+    aspect-ratio: 16/9;
+}
+
+#gallery-container {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.5rem;
+    width: 100%;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 5vh;
+}
+
+#gallery-container>a {
+    font-size: 4rem;
+}
+
+#gallery {
+    display: flex;
+    width: 10vw;
+    height: 20vh;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#current-image {
+    width: 50%;
+    aspect-ratio: 16/9;
+    object-fit: contain;
+}
+
+.GalleryButton {
+    color: white;
+    font-size: 3vw;
+}
+
+@media only screen and (max-width: 600px) {
+    #content-window {
+        top: 0vh;
+        left: 0vw;
+        width: 100vw;
+        height: 60%;
+    }
+}

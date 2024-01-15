@@ -50,10 +50,11 @@ export default class Portfolio extends TemplatePage {
         this.websiteContentGroup = new THREE.Group();
 
         this.iframeParent = document.getElementById('iframe-container');
+        this.imageParent = document.getElementById('gallery-container');
 
-        this.createItemTitleText();
-        this.createItemDescriptionText();
-        this.createImageGallery();
+        this.getImageGallery();
+        this.getItemTitleText();
+        this.getItemDescriptionText();
 
         const selector = document.getElementById('size-controller');
         const content = document.getElementById('content-window');
@@ -106,16 +107,16 @@ export default class Portfolio extends TemplatePage {
 
     }
 
-    createItemTitleText() {
+    getItemTitleText() {
         this.itemTitle = document.getElementById('title');
         this.itemTitle.textContent = "Portfolio";
     }
 
-    createItemDescriptionText() {
+    getItemDescriptionText() {
         this.itemDescriptionText = document.getElementById('description');
     }
 
-    createImageGallery() {
+    getImageGallery() {
         this.previousButton = document.getElementById('previous-image-button');
         this.previousButton.style.display = 'none';
         this.previousButton.onclick = () => this.setCurrentImage(-1);
@@ -128,8 +129,15 @@ export default class Portfolio extends TemplatePage {
         this.imageElement.style.display = 'none';
     }
 
+    disableImageGallery(){
+        this.previousButton.style.display = 'none';
+        this.nextButton.style.display = 'none';
+        this.imageElement.style.display = 'none';
+    }
+
     clearWindow() {
         this.iframeParent.replaceChildren();
+        this.imageParent.replaceChildren();
         this.itemTitle.textContent = "";
         this.itemDescriptionText.textContent = "";
     }
@@ -172,6 +180,8 @@ export default class Portfolio extends TemplatePage {
         if (images.length === 0)
             return;
 
+        this.getImageGallery();
+        
         this.imageElement.style.display = 'block';
         this.receivedImageURLs = images;
         let hasMultipleImages = images.length > 1;
