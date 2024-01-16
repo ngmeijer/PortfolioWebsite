@@ -1,12 +1,17 @@
+
+.animate-content-window {
+    width: 40%;
+}
+
 #content-window {
     margin: 0;
     padding: 0px;
     z-index: 2;
-    width: 60%;
+    // width: 10%;
     height: 100vh;
+    right:0%;
 
     position: absolute;
-    left: 40%;
 
     display: flex;
     flex-direction: column;
@@ -15,6 +20,7 @@
 
     overflow-y: auto;
     overflow-x: hidden;
+    transition: width 1s ease-in-out;
 }
 
 #content-offset {
@@ -41,7 +47,6 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    /* padding-top: 56.25%; */
     display: flex;
     flex-direction: column;
     align-items: center;

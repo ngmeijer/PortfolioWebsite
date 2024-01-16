@@ -5,7 +5,6 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 export default class Portfolio extends TemplatePage {
-    contentWindow;
     scene;
     properties;
     header;
@@ -37,6 +36,8 @@ export default class Portfolio extends TemplatePage {
     initialTerminalWidth;
     currentTerminalWidth;
 
+    showContentButton;
+
     iframeParent;
 
     rootPath = "https://nilsmeijer.com/Terminal/";
@@ -46,7 +47,6 @@ export default class Portfolio extends TemplatePage {
         this.scene = scene;
         this.properties = properties;
 
-        this.contentWindow = new THREE.Group();
         this.websiteContentGroup = new THREE.Group();
 
         this.iframeParent = document.getElementById('iframe-container');
@@ -57,16 +57,23 @@ export default class Portfolio extends TemplatePage {
         this.getItemDescriptionText();
 
         const selector = document.getElementById('size-controller');
-        const content = document.getElementById('content-window');
+        const contentWindow = document.getElementById('content-window');
         const terminal = document.getElementById('terminal-window');
+
+        this.showContentButton = document.getElementById('show-content-button');
+        this.showContentButton.onclick = () => {
+            terminal.classList.toggle('animate-terminal');
+            console.log(contentWindow);
+            contentWindow.classList.toggle('animate-content-window');
+        }
 
         // Event listener for mouse down on the selector
         if (selector !== undefined) {
             selector.addEventListener('mousedown', (event) => {
                 this.isResizing = true;
                 this.initialMouseX = event.clientX;
-                this.initialContentLeft = content.offsetLeft;
-                this.initialContentWidth = content.offsetWidth;
+                this.initialContentLeft = contentWindow.offsetLeft;
+                this.initialContentWidth = contentWindow.offsetWidth;
                 this.initialTerminalWidth = terminal.offsetWidth;
 
                 // Prevent text selection while dragging
@@ -81,7 +88,7 @@ export default class Portfolio extends TemplatePage {
                 let newContentWidth = this.initialContentWidth - deltaX;
 
                 // Limit the width to 70% of the container's width
-                const maxWidth = content.parentElement.offsetWidth * 0.7;
+                const maxWidth = contentWindow.parentElement.offsetWidth * 0.7;
                 newContentWidth = Math.min(newContentWidth, maxWidth);
 
                 // Adjust the left position to keep the right side in the same position
@@ -93,8 +100,8 @@ export default class Portfolio extends TemplatePage {
 
                     // Update the terminal and content elements
                     terminal.style.width = `${newTerminalWidth}px`;
-                    content.style.width = `${newContentWidth}px`;
-                    content.style.left = `${newLeftAdjusted}px`;
+                    contentWindow.style.width = `${newContentWidth}px`;
+                    contentWindow.style.left = `${newLeftAdjusted}px`;
                 }
             }
         });
@@ -102,14 +109,12 @@ export default class Portfolio extends TemplatePage {
         // Event listener for mouse up
         document.addEventListener('mouseup', () => {
             this.isResizing = false;
-            console.log("not resizing anymore.")
         });
 
     }
 
     getItemTitleText() {
         this.itemTitle = document.getElementById('title');
-        this.itemTitle.textContent = "Portfolio";
     }
 
     getItemDescriptionText() {
