@@ -1,13 +1,9 @@
 
-.animate-content-window {
-    width: 40%;
-}
-
-#content-window {
+.content-window {
     margin: 0;
     padding: 0px;
     z-index: 2;
-    // width: 10%;
+    width: 0%;
     height: 100vh;
     right:0%;
 
@@ -21,6 +17,11 @@
     overflow-y: auto;
     overflow-x: hidden;
     transition: width 1s ease-in-out;
+    -webkit-transition: width 1s ease-in-out;
+}
+
+.animate-content-window{
+    width:60%;
 }
 
 #content-offset {

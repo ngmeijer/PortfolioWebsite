@@ -1,4 +1,4 @@
-#terminal-window {
+.terminal-window {
         margin: 0px;
         padding: 0px;
         z-index: 1;
@@ -17,8 +17,8 @@
         transition: width 1s ease-in-out;
 }
 
-.animate-terminal {
-        width: 60%;
+.animate-terminal-window {
+        width: 40%;
 }
 
 #input-field {
@@ -38,9 +38,9 @@
 #terminal-content {
         position: absolute;
         height: 94vh;
-        width: 90%;
+        width: 95%;
         top: 0;
-        left: 2.5vw;
+        left: 5%;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;

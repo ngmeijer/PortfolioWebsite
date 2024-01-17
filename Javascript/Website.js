@@ -250,7 +250,7 @@ export default class MainScene extends THREE.Scene {
                 const pathSegments = filePath.split("\\");
 
                 let folderName = pathSegments[pathSegments.length - 2];
-                console.log(folderName);
+                this.portfolioContent.enableContentWindow();
                 this.portfolioContent.setItemTitle(folderName);
                 this.portfolioContent.setItemDescriptionText(fileData.FileContent);
             }

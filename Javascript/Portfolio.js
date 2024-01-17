@@ -37,6 +37,8 @@ export default class Portfolio extends TemplatePage {
     currentTerminalWidth;
 
     showContentButton;
+    contentWindow;
+    terminalWindow;
 
     iframeParent;
 
@@ -57,13 +59,12 @@ export default class Portfolio extends TemplatePage {
         this.getItemDescriptionText();
 
         const selector = document.getElementById('size-controller');
-        const contentWindow = document.getElementById('content-window');
-        const terminal = document.getElementById('terminal-window');
+        this.contentWindow = document.getElementsByClassName('content-window')[0];
+        this.terminal = document.getElementsByClassName('terminal-window')[0];
 
         this.showContentButton = document.getElementById('show-content-button');
         this.showContentButton.onclick = () => {
-            terminal.classList.toggle('animate-terminal');
-            console.log(contentWindow);
+            terminal.classList.toggle('animate-terminal-window');
             contentWindow.classList.toggle('animate-content-window');
         }
 
@@ -134,7 +135,7 @@ export default class Portfolio extends TemplatePage {
         this.imageElement.style.display = 'none';
     }
 
-    disableImageGallery(){
+    disableImageGallery() {
         this.previousButton.style.display = 'none';
         this.nextButton.style.display = 'none';
         this.imageElement.style.display = 'none';
@@ -145,6 +146,12 @@ export default class Portfolio extends TemplatePage {
         this.imageParent.replaceChildren();
         this.itemTitle.textContent = "";
         this.itemDescriptionText.textContent = "";
+    }
+
+    enableContentWindow(){
+        console.log("enabled window.")
+        this.terminalWindow.classList.toggle('animate-terminal-window');
+        this.contentWindow.classList.toggle('animate-content-window');
     }
 
     setItemTitle(newText) {
@@ -186,7 +193,7 @@ export default class Portfolio extends TemplatePage {
             return;
 
         this.getImageGallery();
-        
+
         this.imageElement.style.display = 'block';
         this.receivedImageURLs = images;
         let hasMultipleImages = images.length > 1;
