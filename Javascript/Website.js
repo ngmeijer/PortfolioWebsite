@@ -238,10 +238,8 @@ export default class MainScene extends THREE.Scene {
                 const fileData = await this.backend.readFile(filePath);
                 console.log(fileData);
 
-                if (fileData.FileContent === "Invalid") {
-                    //this.frontend.addToTerminalContent(this.terminalProperties.errorMessageInvalidFile);
+                if (fileData.FileContent === "Invalid")
                     return;
-                }
 
                 //Succeeded reading the file and displaying contents
                 let successionMessage = `${this.terminalProperties.messageOnCommandType[0]} '<span class='syntax'>${fileName}</span>' ${this.terminalProperties.messageOnCommandType[1]}`;
@@ -250,9 +248,11 @@ export default class MainScene extends THREE.Scene {
                 const pathSegments = filePath.split("\\");
 
                 let folderName = pathSegments[pathSegments.length - 2];
-                this.portfolioContent.enableContentWindow();
                 this.portfolioContent.setItemTitle(folderName);
                 this.portfolioContent.setItemDescriptionText(fileData.FileContent);
+
+                this.portfolioContent.enableContentWindow();
+                this.frontend.setCursorInputField();
             }
             catch (error) {
                 //error?
@@ -279,7 +279,6 @@ export default class MainScene extends THREE.Scene {
         //Move up to parent directory.
         this.backend.moveUpDirectory();
         this.frontend.resetInputLine();
-        this.frontend.updateInputField();
     }
 
     async cdDown(path) {

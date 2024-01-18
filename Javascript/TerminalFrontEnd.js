@@ -115,6 +115,13 @@ export default class TerminalFrontEnd {
         this.terminalLineParent.replaceChildren();
     }
 
+    setCursorInputField(){
+        this.inputFieldLine.focus();
+        var tempVal = this.inputFieldLine.value;
+        this.inputFieldLine.value = '';
+        this.inputFieldLine.value = tempVal;
+    }
+
     reformatDirectory(unformattedDir) {
         let formattedDir = unformattedDir;
         formattedDir += ">";

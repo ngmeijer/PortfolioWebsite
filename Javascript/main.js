@@ -25,7 +25,7 @@ renderer.setSize(sizes.x, sizes.y);
 document.body.appendChild(renderer.domElement);
 const stats = new Stats()
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
-document.body.appendChild(stats.dom)
+// document.body.appendChild(stats.dom)
 //const controls = new OrbitControls(camera, renderer.domElement);
 window.addEventListener('resize', onResize);
 function onResize() {

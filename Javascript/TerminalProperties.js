@@ -29,7 +29,7 @@ export default class TerminalProperties {
         ["<span class='syntax'>clear</span>", "Clear the terminal screen"]
     ]);
     messageOnCommandDir = "Finding directories..."
-    messageOnCommandType = ["Opening file", "and reading contents..." ]
+    messageOnCommandType = ["Opening directory", "and reading contents..." ]
     errorMessageInvalidCommand = " is not recognized as an internal or external command.";
     errorMessageInvalidDirectory = "The system cannot find the path specified.";
     errorMessageInvalidFile = "Error reading file."

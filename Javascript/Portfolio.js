@@ -27,16 +27,6 @@ export default class Portfolio extends TemplatePage {
     imageElement;
     currentIndex;
 
-    // Variables to track mouse position and resizing state
-    isResizing = false;
-    initialMouseX;
-    initialContentLeft;
-    initialContentWidth;
-
-    initialTerminalWidth;
-    currentTerminalWidth;
-
-    showContentButton;
     contentWindow;
     terminalWindow;
 
@@ -58,59 +48,13 @@ export default class Portfolio extends TemplatePage {
         this.getItemTitleText();
         this.getItemDescriptionText();
 
-        const selector = document.getElementById('size-controller');
         this.contentWindow = document.getElementsByClassName('content-window')[0];
-        this.terminal = document.getElementsByClassName('terminal-window')[0];
+        this.terminalWindow = document.getElementsByClassName('terminal-window')[0];
 
-        this.showContentButton = document.getElementById('show-content-button');
-        this.showContentButton.onclick = () => {
-            terminal.classList.toggle('animate-terminal-window');
-            contentWindow.classList.toggle('animate-content-window');
-        }
+        this.contentWindow.addEventListener("animationend", this.onAnimationEnd, false);
+    }
 
-        // Event listener for mouse down on the selector
-        if (selector !== undefined) {
-            selector.addEventListener('mousedown', (event) => {
-                this.isResizing = true;
-                this.initialMouseX = event.clientX;
-                this.initialContentLeft = contentWindow.offsetLeft;
-                this.initialContentWidth = contentWindow.offsetWidth;
-                this.initialTerminalWidth = terminal.offsetWidth;
-
-                // Prevent text selection while dragging
-                event.preventDefault();
-            });
-        }
-
-        // Event listener for mouse move
-        document.addEventListener('mousemove', (event) => {
-            if (this.isResizing) {
-                const deltaX = event.clientX - this.initialMouseX;
-                let newContentWidth = this.initialContentWidth - deltaX;
-
-                // Limit the width to 70% of the container's width
-                const maxWidth = contentWindow.parentElement.offsetWidth * 0.7;
-                newContentWidth = Math.min(newContentWidth, maxWidth);
-
-                // Adjust the left position to keep the right side in the same position
-                const newLeftAdjusted = this.initialContentLeft + (this.initialContentWidth - newContentWidth);
-
-                // Check if the new width is within allowed limits
-                if (newContentWidth > 500 && newContentWidth <= maxWidth) {
-                    const newTerminalWidth = this.initialTerminalWidth - (newContentWidth - this.initialContentWidth);
-
-                    // Update the terminal and content elements
-                    terminal.style.width = `${newTerminalWidth}px`;
-                    contentWindow.style.width = `${newContentWidth}px`;
-                    contentWindow.style.left = `${newLeftAdjusted}px`;
-                }
-            }
-        });
-
-        // Event listener for mouse up
-        document.addEventListener('mouseup', () => {
-            this.isResizing = false;
-        });
+    onAnimationEnd(event){
 
     }
 
@@ -142,14 +86,13 @@ export default class Portfolio extends TemplatePage {
     }
 
     clearWindow() {
-        this.iframeParent.replaceChildren();
-        this.imageParent.replaceChildren();
+        this.iframeParent.style.display = 'none';
+        this.imageParent.style.display = 'none';
         this.itemTitle.textContent = "";
         this.itemDescriptionText.textContent = "";
     }
 
-    enableContentWindow(){
-        console.log("enabled window.")
+    enableContentWindow() {
         this.terminalWindow.classList.toggle('animate-terminal-window');
         this.contentWindow.classList.toggle('animate-content-window');
     }
