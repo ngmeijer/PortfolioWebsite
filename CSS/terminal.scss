@@ -20,10 +20,12 @@
 }
 
 #input-field {
+        z-index: 200;
         position: absolute;
         width: 98%;
         height: 4vh;
         left: 1vw;
+        bottom:0vh;
         color: var(--text-color-terminal);
         font-size: 2rem;
         background-color: var(--background-color-tertiary);

@@ -16,7 +16,6 @@ export default class Portfolio extends TemplatePage {
 
     itemDescriptionText;
     itemTitle;
-    itemGallery;
 
     titleContainer;
     descriptionContainer;
@@ -54,7 +53,7 @@ export default class Portfolio extends TemplatePage {
         this.contentWindow.addEventListener("animationend", this.onAnimationEnd, false);
     }
 
-    onAnimationEnd(event){
+    onAnimationEnd(event) {
 
     }
 
@@ -68,15 +67,14 @@ export default class Portfolio extends TemplatePage {
 
     getImageGallery() {
         this.previousButton = document.getElementById('previous-image-button');
-        this.previousButton.style.display = 'none';
         this.previousButton.onclick = () => this.setCurrentImage(-1);
 
         this.nextButton = document.getElementById('next-image-button');
-        this.nextButton.style.display = 'none';
         this.nextButton.onclick = () => this.setCurrentImage(1);
 
         this.imageElement = document.getElementById('current-image');
-        this.imageElement.style.display = 'none';
+    
+        this.disableImageGallery();
     }
 
     disableImageGallery() {
@@ -86,15 +84,26 @@ export default class Portfolio extends TemplatePage {
     }
 
     clearWindow() {
-        this.iframeParent.style.display = 'none';
-        this.imageParent.style.display = 'none';
+        // this.iframeParent.style.display = 'none';
+        // this.imageParent.style.display = 'none';
+        this.iframeParent.replaceChildren();
+        this.imageElement.src = "";
         this.itemTitle.textContent = "";
         this.itemDescriptionText.textContent = "";
     }
 
-    enableContentWindow() {
-        this.terminalWindow.classList.toggle('animate-terminal-window');
-        this.contentWindow.classList.toggle('animate-content-window');
+    enableContentWindow(state) {
+        console.log(state);
+        switch (state) {
+            case true:
+                this.terminalWindow.classList.add('animate-terminal-window');
+                this.contentWindow.classList.add('animate-content-window');
+                break;
+            case false:
+                this.terminalWindow.classList.remove('animate-terminal-window');
+                this.contentWindow.classList.remove('animate-content-window');
+                break;
+        }
     }
 
     setItemTitle(newText) {

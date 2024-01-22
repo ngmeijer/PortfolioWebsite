@@ -181,7 +181,7 @@ export default class MainScene extends THREE.Scene {
                 } else {
                     this.cdUp();
                 }
-                
+
                 break;
             case "clear":
                 this.frontend.clearTerminal();
@@ -217,7 +217,9 @@ export default class MainScene extends THREE.Scene {
                     return;
 
                 const videoLinks = await this.backend.readFile(videoFile[0]);
-                this.portfolioContent.setIFrameContent(videoLinks.FileContent);
+                if (videoLinks !== undefined) {
+                    this.portfolioContent.setIFrameContent(videoLinks.FileContent);
+                }
 
             } catch (error) {
                 throw (error);
@@ -251,7 +253,7 @@ export default class MainScene extends THREE.Scene {
                 this.portfolioContent.setItemTitle(folderName);
                 this.portfolioContent.setItemDescriptionText(fileData.FileContent);
 
-                this.portfolioContent.enableContentWindow();
+                this.portfolioContent.enableContentWindow(true);
                 this.frontend.setCursorInputField();
             }
             catch (error) {
@@ -276,6 +278,7 @@ export default class MainScene extends THREE.Scene {
         }
 
         this.portfolioContent.clearWindow();
+        this.portfolioContent.enableContentWindow(false);
         //Move up to parent directory.
         this.backend.moveUpDirectory();
         this.frontend.resetInputLine();
