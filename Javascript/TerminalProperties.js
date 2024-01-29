@@ -13,7 +13,7 @@ export default class TerminalProperties {
 `;
 
 
-    customDefaultText = ["Portfolio of Nils Meijer [Version 01.01.2024]",
+    customDefaultText = ["Portfolio of Nils Meijer [Version 29.01.2024]",
         "(c) Meijer Inc. All rights reserved. Work in progress.",
     "Waiting for system assets to initialize...",
     "System ready."]

@@ -182,6 +182,8 @@ export default class MainScene extends THREE.Scene {
                     this.cdUp();
                 }
 
+                this.currentCommand = "dir";
+                this.executeCommand();
                 break;
             case "clear":
                 this.frontend.clearTerminal();

@@ -127,6 +127,8 @@ export default class Portfolio extends TemplatePage {
     }
 
     setIFrameContent(videoLinks) {
+        this.iframeParent.style.display = 'block';
+
         let videoArray = videoLinks.split('\n');
 
         for (let i = 0; i < videoArray.length; i++) {
@@ -144,8 +146,7 @@ export default class Portfolio extends TemplatePage {
         if (images.length === 0)
             return;
 
-        this.getImageGallery();
-
+        this.imageParent.style.display = 'flex';
         this.imageElement.style.display = 'block';
         this.receivedImageURLs = images;
         let hasMultipleImages = images.length > 1;

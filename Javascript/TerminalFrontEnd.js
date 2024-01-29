@@ -13,6 +13,10 @@ export default class TerminalFrontEnd {
     terminalLineParent;
     inputFieldLine;
 
+    choiceWindow;
+    terminalButton;
+    regularButton;
+
     constructor(scene, properties) {
         this.scene = scene;
         this.properties = properties;
@@ -20,6 +24,19 @@ export default class TerminalFrontEnd {
 
         this.terminalLineParent = document.getElementById('terminal-content');
         this.inputFieldLine = document.getElementById('input-field');
+
+        this.choiceWindow = document.getElementsByClassName('website-choice')[0];
+        this.terminalButton = document.getElementsByClassName('terminal-button')[0];
+
+        this.processChoice = this.processChoice.bind(this);
+        this.terminalButton.addEventListener("click", this.processChoice);
+
+        this.regularButton = document.getElementsByClassName('regular-button')[0];
+        this.regularButton.addEventListener("click", this.processChoice);
+    }
+
+    processChoice(){
+        this.choiceWindow.classList.add('hidden');
     }
 
     createTerminal() {
