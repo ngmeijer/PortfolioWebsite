@@ -25,7 +25,7 @@ export default class TerminalProperties {
     validCommandsMap = new Map([
         ["<span class='syntax'>help</span>", "Lists all commands available."],
         ["<span class='syntax'>dir</span>", "Lists all subdirectories of this directory."],
-        ["<span class='syntax'>cd</span>", "Move into specified directory.\n<span class='command-description'>Example: '<span class='syntax'>cd</span> Portfolio' will move current directory to Portfolio.\n\t'<span class='syntax'>cd ../</span>' will move current directory one level up.</span>"],
+        ["<span class='syntax'>cd</span>", "Move into specified directory.\n<span class='command-description'>Example: '<span class='syntax'>cd Portfolio</span>' will move current directory to Portfolio.\n\t'<span class='syntax'>cd ../</span>' will move current directory one level up.</span>"],
         ["<span class='syntax'>clear</span>", "Clear the terminal screen"]
     ]);
     messageOnCommandDir = "Finding directories..."
