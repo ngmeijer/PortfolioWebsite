@@ -28,14 +28,14 @@ export default class TerminalFrontEnd {
         this.choiceWindow = document.getElementsByClassName('website-choice')[0];
         this.terminalButton = document.getElementsByClassName('terminal-button')[0];
 
-        this.processChoice = this.processChoice.bind(this);
-        this.terminalButton.addEventListener("click", this.processChoice);
+        // this.processChoice = this.processChoice.bind(this);
+        // this.terminalButton.addEventListener("click", () => this.processChoice('terminal'));
 
-        this.regularButton = document.getElementsByClassName('regular-button')[0];
-        this.regularButton.addEventListener("click", this.processChoice);
+        // this.regularButton = document.getElementsByClassName('regular-button')[0];
+        // this.regularButton.addEventListener("click", () => this.processChoice('regular'));
     }
 
-    processChoice(){
+    processChoice(choice){
         this.choiceWindow.classList.add('hidden');
     }
 

@@ -1,0 +1,140 @@
+body,
+html {
+    margin: 0px;
+    padding: 0px;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+@font-face {
+    font-family: 'comfortaa';
+    src: url('../static/fonts/Comfortaa-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'dancing';
+    src: url('../static/fonts/DancingScript-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'abel';
+    src: url('../static/fonts/Abel-Regular.ttf');
+}
+
+#title {
+    font-family: 'dancing';
+    font-size: 5rem;
+    width: 100vw;
+    height: 10vh;
+    position: absolute;
+    text-align: center;
+}
+
+#choice-button{
+    font-family: 'comfortaa';
+    font-size: 1rem;
+    border:none;
+    width:10vw;
+    height:5vh;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    align-content: center;
+}
+
+#choice-button > a{
+    width:100%;
+    height:100%;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.menu-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10vh;
+}
+
+.menu-container>a {
+    font-family: 'comfortaa';
+    font-size: 3rem;
+    text-decoration: none;
+}
+
+#portfolio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.portfolio-item {
+    width: 100%;
+    height: 20vh;
+    text-align: center;
+    transition:all 0.5s ease-in-out;
+}
+
+.portfolio-item:hover{
+    height:35vh;
+    font-size: larger;
+}
+
+.portfolio-item>h1 {
+    font-family: 'comfortaa';
+}
+
+#aboutme {
+    width: 100%;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#photo{
+    max-width: 20%;
+}
+
+#aboutme-description {
+    font-family: 'comfortaa';
+    font-size: 1.3rem;
+    padding:2vh 5vw 2vh 5vw;
+}
+
+#contactme {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1vh;
+}
+
+#contactme-description{
+    font-family: 'comfortaa';
+    font-size: 1.3rem;
+    padding:2vh 5vw 2vh 5vw;
+}
+
+.contact-channel{
+    width:20%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contact-channel > img{
+    width:70%;
+}
+
+.contact-channel > a {
+    width: 100%;
+    font-size: 2rem;
+    text-decoration: none;
+    font-family: 'comfortaa';
+}

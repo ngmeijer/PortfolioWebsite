@@ -148,6 +148,7 @@ export default class MainScene extends THREE.Scene {
                 (async () => {
                     try {
                         //TODO: implement dir for subdirectories
+                        console.log(this.terminalProperties.currentDirectory);
                         const data = await this.backend.recursivelySearchDirectories(this.terminalProperties.currentDirectory);
 
                         //Filter out images, I don't want those in the directory listing.

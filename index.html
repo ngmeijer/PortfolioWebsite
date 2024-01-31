@@ -4,50 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML 5 Boilerplate</title>
     <link rel="stylesheet" href="/CSS/style.scss">
-    <link rel="stylesheet" href="global.scss">
-    <link rel="stylesheet" href="/CSS/terminal.scss">
-    <link rel="stylesheet" href="/CSS/content.scss">
-    <title>Portfolio</title>
 </head>
 
 <body>
-    <script type="module" src="./Javascript/main.js"></script>
-    <canvas class="webgl"></canvas>
-    <div class="terminal-window">
-        <div id="terminal-content">
-        </div>
-    </div>
-    <input id="input-field"></input>
-
-    <div class="content-window">
-        <div id="content-offset">
-            <p id="title"></p>
-            <p id="description"></p>
-
-            <div id="gallery-container">
-                <a id="previous-image-button">&lt;</a>
-                <img id="current-image" src="">
-                <a id="next-image-button">&gt;</a>
-            </div>
-            <div id="iframe-container"></div>
-        </div>
-    </div>
+    <script type="module" src="./Javascript/simple.js"></script>
     <div class="website-choice">
         <h1>Welcome to my portfolio!</h1>
         <h1>Would you prefer:</h1>
         <div class="choice-buttons">
-            <button class="btn terminal-button">
+            <a class="btn terminal-button" href="TerminalPortfolio.html">
                 <img src="static/images/code-image.svg">
                 <span class="text">Terminal</span>
-            </button>
+            </a>
 
-            <button class="btn regular-button">
+            <a class="btn regular-button" href="/SimplePortfolio.html">
                 <img src="static/images/normal-website-image.svg">
                 <span class="text">Regular</span>
-            </button>
+            </a>
         </div>
-    </div>
     </div>
 </body>
 

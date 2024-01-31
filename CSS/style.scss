@@ -51,6 +51,7 @@ p {
 a {
     color: var(--button-color);
     cursor: pointer;
+    text-decoration: none;
 }
 
 .website-choice {
@@ -80,7 +81,7 @@ a {
     align-items: center;
 }
 
-.choice-buttons>button {
+.choice-buttons>a {
     margin: 2vw;
     font-size: 2rem;
     background: #2E444C;
