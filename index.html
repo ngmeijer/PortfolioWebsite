@@ -4,27 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HTML 5 Boilerplate</title>
-    <link rel="stylesheet" href="/CSS/style.scss">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="/CSS/SimplePortfolio.scss">
+    <link rel="stylesheet" href="/CSS/PortfolioSection.scss">
+    <link rel="stylesheet" href="/CSS/AboutMeSection.scss">
+    <link rel="stylesheet" href="/CSS/ContactMeSection.scss">
 </head>
+
 
 <body>
     <script type="module" src="./Javascript/simple.js"></script>
-    <div class="website-choice">
-        <h1>Welcome to my portfolio!</h1>
-        <h1>Would you prefer:</h1>
-        <div class="choice-buttons">
-            <a class="btn terminal-button" href="TerminalPortfolio.html">
-                <img src="static/images/code-image.svg">
-                <span class="text">Terminal</span>
-            </a>
-
-            <a class="btn regular-button" href="/SimplePortfolio.html">
-                <img src="static/images/normal-website-image.svg">
-                <span class="text">Regular</span>
-            </a>
+    <div id="general-container">
+        <div id="intro">
+            <h1 id="title">Nils Meijer</h1>
+            <h2 id="quote">“I have never done it before so I think I can do it”</h2>
+            <h2 id="role-introduction">Aspiring AI & Gameplay Programmer</h2>
         </div>
+        <div class="menu-container">
+            <a href="#portfolio">Portfolio</a>
+            <a href="#aboutme">About Me</a>
+            <a href="#contactme">Contact Me</a>
+        </div>
+    </div>
+    <div id="portfolio">
+        <h1>Portfolio</h1>
+    </div>
+    <div id="aboutme">
+        <h1>About me</h1>
+        <div id="aboutme-container">
+            <img id="photo">
+            <p id="aboutme-description"></p>
+        </div>
+    </div>
+    <div id="contactme">
+        <h1>Contact me</h1>
+        <div id="contactme-channel-container"></div>
     </div>
 </body>
 

@@ -1,0 +1,122 @@
+body,
+html {
+    margin: 0px;
+    padding: 0px;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    width:100vw;
+}
+
+@font-face {
+    font-family: 'comfortaa';
+    src: url('../static/fonts/Comfortaa-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'dancing';
+    src: url('../static/fonts/DancingScript-VariableFont_wght.ttf');
+}
+
+#general-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Use min-height instead of height to allow for content expansion */
+}
+
+
+#intro {
+    flex: 6; /* This will make #intro take up remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#intro > h2{
+    margin:1vh;
+}
+
+
+#title {
+    font-family: 'comfortaa';
+    font-size: 5rem;
+    width: 100vw;
+}
+
+#quote{
+    font-family: 'dancing';
+    font-size: 3rem;
+    width:100vw;
+}
+
+#role-introduction{
+    font-family: 'comfortaa';
+}
+
+.menu-container {
+    flex: 20; /* This will make .menu-container take up remaining space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+
+.menu-container>a {
+    font-family: 'comfortaa';
+    font-size: 3rem;
+    text-decoration: none;
+    color: #000;
+    line-height: 3rem;
+}
+
+.menu-container>a:hover{
+    color:white;
+    transition:0.3s color ease-in-out;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    50% {
+        background-position: 50% 100%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+#intro,
+.menu-container,
+#portfolio,
+#aboutme,
+#contactme {
+    background-size: 200% auto;
+    outline: none;
+    border: none;
+}
+
+#intro{
+    background: linear-gradient(to bottom, #F2C84B, #D97823);
+}
+
+.menu-container {
+    background: linear-gradient(to bottom, #D97823, #BF4215);
+    text-align: center;
+}
+
+#portfolio {
+    background: linear-gradient(to bottom, #BF4215, #8C2C16);
+}
+
+#aboutme {
+    background: linear-gradient(to bottom, #8C2C16, #5F2620);
+}
+
+#contactme {
+    background: linear-gradient(to bottom, #5F2620, #5F2620);
+}

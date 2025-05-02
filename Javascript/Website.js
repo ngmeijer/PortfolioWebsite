@@ -1,41 +1,29 @@
-import * as THREE from 'three';
 import Portfolio from './Portfolio.js';
 import TerminalProperties from './TerminalProperties.js';
-import PortfolioProperties from './PortfolioProperties.js';
 import TerminalFrontEnd from './TerminalFrontEnd.js';
 import TerminalBackEnd from './TerminalBackEnd.js';
-import FontManager from './FontManager.js';
 
-export default class MainScene extends THREE.Scene {
+export default class MainScene {
     terminalProperties;
-    portfolioProperties;
     frontend;
     backend;
-
-    fontManager;
 
     currentCommand = "";
     portfolioContent;
     userIsTyping;
 
-    constructor(size, camera) {
-        super()
+    constructor() {
         this.terminalProperties = new TerminalProperties();
-        this.portfolioProperties = new PortfolioProperties();
-        this.portfolioProperties.size = size;
-        this.portfolioProperties.camera = camera;
 
-        this.fontManager = new FontManager(this.terminalProperties, this.portfolioProperties);
-        this.frontend = new TerminalFrontEnd(this, this.terminalProperties);
+        this.frontend = new TerminalFrontEnd(this.terminalProperties);
         this.backend = new TerminalBackEnd(this.terminalProperties);
 
-        this.portfolioContent = new Portfolio(this, this.portfolioProperties);
+        this.portfolioContent = new Portfolio();
         (async () => {
             try {
-                await this.fontManager.loadFonts();
                 this.frontend.createTerminal();
             } catch (error) {
-                throw (error);
+                console.log(error);
             }
         })();
 

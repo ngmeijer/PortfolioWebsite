@@ -1,18 +1,11 @@
-import * as THREE from 'three';
 import TemplatePage from './TemplatePage.js';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
-export default class Portfolio extends TemplatePage {
-    scene;
+export default class Portfolio {
     properties;
     header;
     websiteContentGroup;
     previousText = "";
     previousTextObject;
-
-    textRenderer;
 
     itemDescriptionText;
     itemTitle;
@@ -33,13 +26,7 @@ export default class Portfolio extends TemplatePage {
 
     rootPath = "https://nilsmeijer.com/Terminal/";
 
-    constructor(scene, properties) {
-        super();
-        this.scene = scene;
-        this.properties = properties;
-
-        this.websiteContentGroup = new THREE.Group();
-
+    constructor() {
         this.iframeParent = document.getElementById('iframe-container');
         this.imageParent = document.getElementById('gallery-container');
 
@@ -51,10 +38,6 @@ export default class Portfolio extends TemplatePage {
         this.terminalWindow = document.getElementsByClassName('terminal-window')[0];
 
         this.contentWindow.addEventListener("animationend", this.onAnimationEnd, false);
-    }
-
-    onAnimationEnd(event) {
-
     }
 
     getItemTitleText() {
@@ -163,17 +146,5 @@ export default class Portfolio extends TemplatePage {
         let imageElement = document.getElementById('current-image');
         let path = this.rootPath + images[this.currentIndex];
         imageElement.src = path;
-    }
-
-    async loadFont() {
-        try {
-            this.loadedFont = await new Promise((resolve, reject) => {
-                this.fontLoader.load('../../static/fonts/hack.json', (font) => {
-                    resolve(font);
-                }, undefined, reject);
-            });
-        } catch (error) {
-            throw error;
-        }
     }
 }

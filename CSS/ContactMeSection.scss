@@ -1,0 +1,73 @@
+#contactme {
+    width: 100%;
+    display: flex;
+    padding-top: 0vh;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#contactme>h1 {
+    font-size: 4rem;
+    font-family: 'comfortaa';
+    color: #CCCCCC;
+}
+
+#contactme-description {
+    font-family: 'comfortaa';
+    font-size: 1.3rem;
+    padding: 2vh 5vw 2vh 5vw;
+}
+
+.contact-button {
+    width: 30%;
+    padding: 1vh 0vw 1vh 0vw;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: none;
+
+    background: none;
+    border: 2px solid;
+    font: inherit;
+}
+
+// Basic button styles
+.contact-button {
+    background: none;
+    position: relative;
+    left: 0vw;
+    border: none;
+    font: inherit;
+    line-height: 1;
+    margin: 0.5em;
+    padding: 1em 2em;
+}
+
+.contact-button img {
+    width: 5vw;
+    height: auto;
+}
+
+.contact-channel a {
+    font-family: 'comfortaa';
+    text-decoration: none;
+    color: white;
+    font-size: 1.3rem;
+    transition: font-size 0.3s ease-in-out;
+}
+
+.contact-button:hover a {
+    font-size: 1.7rem;
+}
+
+#contactme-channel-container{
+    width:70%;
+}
+
+.contact-channel {
+    font-family: 'comfortaa';
+    font-size: 1.2rem;
+    padding: 2vh 5vw 2vh 5vw;
+    color: #ffffff;
+}

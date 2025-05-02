@@ -1,9 +1,4 @@
-import * as THREE from 'three';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-
 export default class TerminalFrontEnd {
-    scene;
-
     properties;
     inputFieldContent = "";
     startingUp;
@@ -17,30 +12,17 @@ export default class TerminalFrontEnd {
     terminalButton;
     regularButton;
 
-    constructor(scene, properties) {
-        this.scene = scene;
+    constructor(properties) {
         this.properties = properties;
         this.startingUp = true;
 
         this.terminalLineParent = document.getElementById('terminal-content');
         this.inputFieldLine = document.getElementById('input-field');
-
-        this.choiceWindow = document.getElementsByClassName('website-choice')[0];
-        this.terminalButton = document.getElementsByClassName('terminal-button')[0];
-
-        // this.processChoice = this.processChoice.bind(this);
-        // this.terminalButton.addEventListener("click", () => this.processChoice('terminal'));
-
-        // this.regularButton = document.getElementsByClassName('regular-button')[0];
-        // this.regularButton.addEventListener("click", () => this.processChoice('regular'));
-    }
-
-    processChoice(choice){
-        this.choiceWindow.classList.add('hidden');
     }
 
     createTerminal() {
         this.inputFieldLine.textContent = this.properties.defaultTerminalLine;
+        this.properties.currentDirectory = "MainDrive";
 
         const lines = this.properties.asciiArt.split('\n');
 
