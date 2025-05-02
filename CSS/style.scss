@@ -1,0 +1,201 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    /* Blue 2*/
+    --text-color-terminal: #92BADD;
+    --text-color-content: #F4E9CD;
+    --text-highlight-color: #F7F7FF;
+    --background-color-main: #333D48;
+    --background-color-secondary: #1D2534;
+    --background-color-tertiary: #011526;
+    --button-color: #005CE5;
+
+    --size-default: 22px;
+    --size-sm: 16px;
+    --color-blue: var(--text-color-terminal);
+    --color-black: #000;
+}
+
+@font-face {
+    font-family: 'hack';
+    src: url('static/fonts/hack.json');
+}
+
+@font-face {
+    font-family: 'slant';
+    src: url('static/fonts/slant.TTF');
+}
+
+.webgl {
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+    z-index: 0;
+}
+
+html,
+body {
+    overflow: hidden;
+    user-select: none;
+}
+
+p {
+    font-family: 'hack', sans-serif;
+    transform-origin: top left;
+}
+
+a {
+    color: var(--button-color);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.website-choice {
+    z-index: 400;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    display: block;
+    background-color: #293033;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.website-choice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.choice-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.choice-buttons>a {
+    margin: 2vw;
+    font-size: 2rem;
+    background: #2E444C;
+}
+
+.btn {
+    border: none;
+    width: 20vw;
+    height: 10vh;
+    border-radius: 3em;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 12px;
+    background: #1C1A1C;
+    cursor: pointer;
+    transition: all 450ms ease-in-out;
+}
+
+.btn>img {
+    width: 40%;
+    height: 80%;
+}
+
+.sparkle {
+    fill: #AAAAAA;
+    transition: all 800ms ease;
+}
+
+.text {
+    font-weight: 600;
+    color: #AAAAAA;
+    font-size: 1.5rem;
+}
+
+.terminal-button:hover {
+    background: linear-gradient(0deg, #A47CF3, #683FEA);
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+        inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+        0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+        0px 0px 180px 0px #9917FF;
+}
+
+.regular-button:hover {
+    background: linear-gradient(0deg, #BF3604, #F2A30F);
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+        inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+        0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+        0px 0px 180px 0px #F2BB13;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn>span {
+    transition: all 450ms ease-in-out;
+}
+
+.btn:hover>span {
+    font-size: 1.7rem;
+}
+
+.btn:hover .text {
+    color: white;
+}
+
+.btn:hover .sparkle {
+    fill: white;
+    transform: scale(1.2);
+}
+
+@media only screen and (max-width: 600px) {
+    .glowing-btn {
+        font-size: 1em;
+    }
+}
+
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --glowColor {
+    syntax: "<color>";
+    initial-value: #58DD93;
+}
+
+@keyframes rotate {
+    0% {
+        --angle: 0deg;
+        --glowColor: var(--color-blue);
+    }
+
+    100% {
+        --angle: 360deg;
+        --glowColor: var(--color-blue);
+    }
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    background:
+        linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%,
+            var(--color-black) 100%),
+        radial-gradient(circle at 50% -50%,
+            #335F4B 0%,
+            var(--color-black) 100%);
+    font-family: monospace;
+    font-size: 20px;
+}

@@ -1,0 +1,38 @@
+#aboutme {
+    width: 100%;
+    padding: 0vh 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.highlight {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+#aboutme>h1 {
+    font-size: 4rem;
+    font-family: 'comfortaa';
+    color: #FFFFFF
+}
+
+#photo {
+    max-width: 20%;
+}
+
+#aboutme-container {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#aboutme-description {
+    font-family: 'comfortaa';
+    font-size: 1.2rem;
+    padding: 2vh 5vw 2vh 5vw;
+    color: #ffffff
+}

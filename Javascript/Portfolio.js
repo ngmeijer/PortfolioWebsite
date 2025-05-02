@@ -1,0 +1,150 @@
+import TemplatePage from './TemplatePage.js';
+
+export default class Portfolio {
+    properties;
+    header;
+    websiteContentGroup;
+    previousText = "";
+    previousTextObject;
+
+    itemDescriptionText;
+    itemTitle;
+
+    titleContainer;
+    descriptionContainer;
+
+    receivedImageURLs;
+    previousButton;
+    nextButton;
+    imageElement;
+    currentIndex;
+
+    contentWindow;
+    terminalWindow;
+
+    iframeParent;
+
+    rootPath = "https://nilsmeijer.com/Terminal/";
+
+    constructor() {
+        this.iframeParent = document.getElementById('iframe-container');
+        this.imageParent = document.getElementById('gallery-container');
+
+        this.getImageGallery();
+        this.getItemTitleText();
+        this.getItemDescriptionText();
+
+        this.contentWindow = document.getElementsByClassName('content-window')[0];
+        this.terminalWindow = document.getElementsByClassName('terminal-window')[0];
+
+        this.contentWindow.addEventListener("animationend", this.onAnimationEnd, false);
+    }
+
+    getItemTitleText() {
+        this.itemTitle = document.getElementById('title');
+    }
+
+    getItemDescriptionText() {
+        this.itemDescriptionText = document.getElementById('description');
+    }
+
+    getImageGallery() {
+        this.previousButton = document.getElementById('previous-image-button');
+        this.previousButton.onclick = () => this.setCurrentImage(-1);
+
+        this.nextButton = document.getElementById('next-image-button');
+        this.nextButton.onclick = () => this.setCurrentImage(1);
+
+        this.imageElement = document.getElementById('current-image');
+    
+        this.disableImageGallery();
+    }
+
+    disableImageGallery() {
+        this.previousButton.style.display = 'none';
+        this.nextButton.style.display = 'none';
+        this.imageElement.style.display = 'none';
+    }
+
+    clearWindow() {
+        // this.iframeParent.style.display = 'none';
+        // this.imageParent.style.display = 'none';
+        this.iframeParent.replaceChildren();
+        this.imageElement.src = "";
+        this.itemTitle.textContent = "";
+        this.itemDescriptionText.textContent = "";
+    }
+
+    enableContentWindow(state) {
+        console.log(state);
+        switch (state) {
+            case true:
+                this.terminalWindow.classList.add('animate-terminal-window');
+                this.contentWindow.classList.add('animate-content-window');
+                break;
+            case false:
+                this.terminalWindow.classList.remove('animate-terminal-window');
+                this.contentWindow.classList.remove('animate-content-window');
+                break;
+        }
+    }
+
+    setItemTitle(newText) {
+        this.itemTitle.textContent = newText;
+    }
+
+    setItemDescriptionText(newText) {
+        this.itemDescriptionText.innerHTML = newText;
+    }
+
+    setCurrentImage(direction) {
+        let newIndex = this.currentIndex + direction;
+        if (newIndex < 0)
+            newIndex = this.receivedImageURLs.length - 1;
+        if (newIndex > this.receivedImageURLs.length - 1)
+            newIndex = 0;
+
+        this.currentIndex = newIndex;
+        let path = this.rootPath + this.receivedImageURLs[this.currentIndex];
+        this.imageElement.src = path;
+    }
+
+    setIFrameContent(videoLinks) {
+        this.iframeParent.style.display = 'block';
+
+        let videoArray = videoLinks.split('\n');
+
+        for (let i = 0; i < videoArray.length; i++) {
+            var iframe = document.createElement("iframe");
+
+            if (this.iframeParent) {
+                this.iframeParent.appendChild(iframe);
+                iframe.setAttribute("src", videoArray[i]);
+                iframe.setAttribute('allowfullScreen', 'true')
+            }
+        }
+    }
+
+    setGalleryContent(images) {
+        if (images.length === 0)
+            return;
+
+        this.imageParent.style.display = 'flex';
+        this.imageElement.style.display = 'block';
+        this.receivedImageURLs = images;
+        let hasMultipleImages = images.length > 1;
+        this.currentIndex = 0;
+
+        if (hasMultipleImages === false) {
+            this.previousButton.style.display = 'none';
+            this.nextButton.style.display = 'none';
+        } else {
+            this.previousButton.style.display = 'block';
+            this.nextButton.style.display = 'block';
+        }
+
+        let imageElement = document.getElementById('current-image');
+        let path = this.rootPath + images[this.currentIndex];
+        imageElement.src = path;
+    }
+}

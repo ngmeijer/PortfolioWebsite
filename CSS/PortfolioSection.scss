@@ -1,0 +1,108 @@
+#portfolio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding:8vh 0vw;
+}
+
+#portfolio>h1 {
+    font-family: 'comfortaa';
+    font-size: 4rem;
+}
+
+.portfolio-item {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.portfolio-clickable {
+    width: 100%;
+    text-decoration: none;
+    color: black;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5vh;
+}
+
+.item-name {
+    font-size: 2rem;
+    margin:0;
+    font-family: 'comfortaa';
+    transition: all 0.5s ease-in-out;
+}
+
+@keyframes scaleElement {
+    from {
+        transform:scale(0.8);
+        color:black;
+    }
+
+    to {
+        transform:scale(1.1);
+        color:white;
+    }
+}
+
+.click-hint {
+    overflow: hidden;
+    max-height: 0;
+    height:0;
+    margin:1vh 0vw;
+    font-family: 'comfortaa';
+    transform-origin: center;
+    transition: all 0.5s ease-in-out;
+    animation-name: scaleElement;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+.item-summary {
+    overflow: hidden;
+    width: 100%;
+    max-height: 0;
+    font-size: 1rem;
+    font-family: 'comfortaa';
+    transition: max-height 0.5s ease-in-out;
+    color: white;
+    margin:0;
+}
+
+.item-image{
+    width:25%;
+    transition:0.3s width ease-in-out;
+}
+
+.item-summary>pre {
+    width: 40%;
+    text-align: left;
+    font-family: 'comfortaa';
+}
+
+.portfolio-item:hover>.item-summary {
+    max-height: 40vh;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.portfolio-item:hover>.click-hint {
+    height:5vh;
+    max-height: 10vh;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.portfolio-item:hover>.item-name {
+    font-size: 2.5rem;
+    color:white;
+}
+
+.portfolio-item:hover>.item-image{
+    width:50%;
+}
